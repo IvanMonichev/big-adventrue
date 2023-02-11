@@ -32,6 +32,4 @@
 7. Сортировка.
 8. Взаимодействие с сервером.
 9. Обратная связь интерфейса.
----
 
-Ссылка на проект: [https://ivanmonichev.github.io/kekstagram/](https://ivanmonichev.github.io/kekstagram/)
