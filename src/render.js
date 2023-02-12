@@ -1,9 +1,5 @@
-const RenderPosition = {
-  BEFOREBEGIN: 'beforebegin',
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-  AFTEREND: 'afterend',
-};
+import { RenderPosition } from './utils/constants';
+
 
 const createElement = (template) => {
   const newElement = document.createElement('div');
