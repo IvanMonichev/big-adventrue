@@ -1,4 +1,4 @@
-import { render, RenderPosition } from '../render';
+import { render, RenderPosition } from '../utils/render';
 import PointItemView from '../view/point-item-view';
 import AddNewPointView from '../view/add-new-point-view';
 import ListView from '../view/list-view';

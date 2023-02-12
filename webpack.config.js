@@ -2,7 +2,7 @@ const path = require('path');
 const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
-  entry: './src/main.js',
+  entry: './src/index.js',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'build'),
@@ -10,7 +10,7 @@ module.exports = {
   },
   devtool: 'source-map',
   devServer: {
-    port: 4000,
+    port: 3000,
     allowedHosts: [
       "big-trip.org",
     ],

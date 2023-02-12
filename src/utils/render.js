@@ -1,4 +1,4 @@
-import { RenderPosition } from './utils/constants';
+import { RenderPosition } from './constants';
 
 
 const createElement = (template) => {
