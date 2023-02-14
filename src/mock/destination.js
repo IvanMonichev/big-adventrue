@@ -18,8 +18,6 @@ const generateDescription = () => {
 const generatePictureDescription = () => {
   const descriptions = [];
 
-  const randomNumberParagraphs = getRandomInteger(0, 3)
-
   for (let i = 0; i < 10; i++) {
     descriptions.push(lorem.generateSentences());
   }

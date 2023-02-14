@@ -10,15 +10,18 @@ export default class PointsPresenter {
   addNewPointComponent = new AddNewPointView();
   editPointComponent = new EditPointView();
 
-  init = (container) => {
+  init = (container, pointsModel) => {
     this.container = container;
+    this.pointsModel = pointsModel;
+    this.listPoints = [...this.pointsModel.getPoints()];
+
 
     render(this.listViewComponent, this.container);
     render(this.addNewPointComponent, this.listViewComponent.getElement());
     render(this.editPointComponent, this.listViewComponent.getElement(), RenderPosition.AFTERBEGIN);
 
-    for (let i = 0; i < POINT_COUNT; i++) {
-      render(new PointItemView(), this.listViewComponent.getElement());
+    for (let i = 0; i < this.listPoints.length; i++) {
+      render(new PointItemView(this.listPoints[i]), this.listViewComponent.getElement());
     }
   }
 }

@@ -19,15 +19,35 @@ const generateType = () => {
   return types[randomIndex];
 }
 
-const generatePoint = () => ({
-  id: 0,
+const getRandomListIndex = (amount) => {
+
+  const listRandomListIndex = [];
+
+  let counter = 0;
+
+  while (counter < amount) {
+    listRandomListIndex.push(getRandomInteger(0, 20))
+    counter++;
+  }
+
+  return listRandomListIndex;
+}
+
+const generatePoint = (id) => ({
+  id,
   dateFrom: '2019-07-10T22:55:56.845Z',
   dateTo: '2019-07-11T11:22:13.375Z',
-  base_price: 1100,
+  base_price: getRandomInteger(500, 4500),
   type: generateType(),
-  isFavorite: false,
-  destination: [],
-  offers: []
+  isFavorite: Boolean(getRandomInteger()),
+  destination: generateDestionation(),
+  offers: getRandomListIndex(getRandomInteger(1, 5)),
 })
 
-export { generatePoint }
+const buildPoint = (id) => {
+  const point = generatePoint(id);
+  // point.destination = point.destination.map((item) => generateDestionation(item));
+  return point;
+}
+
+export { buildPoint, generateType }
