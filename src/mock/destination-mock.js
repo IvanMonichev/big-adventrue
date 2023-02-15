@@ -1,5 +1,5 @@
 import { getRandomInteger } from '../utils/helpers';
-import { lorem } from './lorem-ipsum';
+import { lorem } from '../utils/lorem-ipsum';
 
 const generateDescription = () => {
   const descriptions = [];

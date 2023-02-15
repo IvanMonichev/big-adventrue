@@ -1,6 +1,5 @@
 import { LoremIpsum } from 'lorem-ipsum';
 
-
 export const lorem = new LoremIpsum({
   sentencesPerParagraph: {
     min: 1,

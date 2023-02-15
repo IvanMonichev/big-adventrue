@@ -1,23 +1,13 @@
 import { getRandomInteger } from '../utils/helpers';
-import { generateDestionation } from './destination';
+import { generateDestionation } from './destination-mock';
 import dayjs from 'dayjs';
+import { TYPES } from '../utils/constants';
 
 const generateType = () => {
-  const types = [
-    'taxi',
-    'bus',
-    'train',
-    'ship',
-    'drive',
-    'flight',
-    'check-in',
-    'sightseeing',
-    'restaurant'
-  ];
 
-  const randomIndex = getRandomInteger(0, types.length - 1);
+  const randomIndex = getRandomInteger(0, TYPES.length - 1);
 
-  return types[randomIndex];
+  return TYPES[randomIndex];
 }
 
 const getRandomListIndex = (amount) => {
@@ -34,7 +24,7 @@ const getRandomListIndex = (amount) => {
   return listRandomListIndex;
 }
 
-export const generateDate = () => {
+const generateDate = () => {
   const maxDaysGap = 7;
   const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
   return dayjs().add(daysGap, 'millisecond').toDate();
@@ -52,4 +42,4 @@ const generatePoint = (id) => ({
 })
 
 
-export { generatePoint, generateType }
+export { generatePoint, generateType, generateDate }

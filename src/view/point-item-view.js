@@ -1,10 +1,11 @@
 import { createElement } from '../utils/render';
 import { formatDate } from '../utils/helpers';
 
-const createOffersTemplate = (offers, offersList) => {
-  const preparedOffers = offersList.filter(item => offers.includes(item.id));
+const createOffersTemplate = (offers, type, offersByType) => {
+  const offersByCurrentType = offersByType.find((item) => item.type === type).offers;
+  const offersById = offersByCurrentType.filter((item) => offers.includes(item.id));
 
-  return preparedOffers.map(({ title, price }) => {
+  return offersById.map(({ title, price }) => {
     return (
       `<li class="event__offer">
         <span class="event__offer-title">${title}</span>
@@ -15,7 +16,7 @@ const createOffersTemplate = (offers, offersList) => {
   }).join('');
 };
 
-const createPointItemTemplate = ({ id, dateFrom, dateTo, basePrice, type, isFavorite, destination, offers }, offersList) => {
+const createPointItemTemplate = ({ id, dateFrom, dateTo, basePrice, type, isFavorite, destination, offers }, offersByType) => {
 
   const isFavoriteItem = isFavorite
     ? 'event__favorite-btn--active'
@@ -42,7 +43,7 @@ const createPointItemTemplate = ({ id, dateFrom, dateTo, basePrice, type, isFavo
             </p>
             <h4 class="visually-hidden">Offers:</h4>
             <ul class="event__selected-offers">
-              ${createOffersTemplate(offers, offersList)}
+              ${createOffersTemplate(offers, type, offersByType)}
             </ul>
             <button class="event__favorite-btn ${isFavoriteItem}" type="button">
               <span class="visually-hidden">Add to favorite</span>
@@ -59,14 +60,14 @@ const createPointItemTemplate = ({ id, dateFrom, dateTo, basePrice, type, isFavo
 };
 
 export default class PointItemView {
-  constructor(point, offersList) {
+  constructor(point, offersByType) {
     this.point = point;
-    this.offersList = offersList;
+    this.offersByType = offersByType;
   }
 
 
   getTemplate() {
-    return createPointItemTemplate(this.point, this.offersList);
+    return createPointItemTemplate(this.point, this.offersByType);
   }
 
   getElement() {

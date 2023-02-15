@@ -9,13 +9,11 @@ export default class PointsPresenter {
   addNewPointComponent = new AddNewPointView();
   editPointComponent = new EditPointView();
 
-  init = (container, pointsModel, offersModel) => {
+  init = (container, pointsModel) => {
     this.container = container;
     this.pointsModel = pointsModel;
-    this.offersModel = offersModel;
     this.listPoints = [...this.pointsModel.getPoints()];
-    this.listOffers = [...this.offersModel.getOffers()];
-
+    this.listOffers = [...this.pointsModel.getOffersByType()];
 
     render(this.listViewComponent, this.container);
     render(this.addNewPointComponent, this.listViewComponent.getElement());
