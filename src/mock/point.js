@@ -1,5 +1,6 @@
 import { getRandomInteger } from '../utils/helpers';
 import { generateDestionation } from './destination';
+import dayjs from 'dayjs';
 
 const generateType = () => {
   const types = [
@@ -33,21 +34,22 @@ const getRandomListIndex = (amount) => {
   return listRandomListIndex;
 }
 
+export const generateDate = () => {
+  const maxDaysGap = 7;
+  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
+  return dayjs().add(daysGap, 'millisecond').toDate();
+}
+
 const generatePoint = (id) => ({
   id,
-  dateFrom: '2019-07-10T22:55:56.845Z',
-  dateTo: '2019-07-11T11:22:13.375Z',
-  base_price: getRandomInteger(500, 4500),
+  dateFrom: generateDate(),
+  dateTo: generateDate(),
+  basePrice: getRandomInteger(20, 150),
   type: generateType(),
   isFavorite: Boolean(getRandomInteger()),
   destination: generateDestionation(),
   offers: getRandomListIndex(getRandomInteger(1, 5)),
 })
 
-const buildPoint = (id) => {
-  const point = generatePoint(id);
-  // point.destination = point.destination.map((item) => generateDestionation(item));
-  return point;
-}
 
-export { buildPoint, generateType }
+export { generatePoint, generateType }

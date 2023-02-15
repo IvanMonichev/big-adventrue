@@ -40,7 +40,7 @@ export const generateDestionation = () => ({
   name: generateName(),
   pictures: [
     {
-      src: 'http://picsum.photos/300/200?r=0.0762563005163317',
+      src: `http://picsum.photos/300/200?r=${getRandomInteger(0, 100)}`,
       description: generatePictureDescription(),
     }
   ]

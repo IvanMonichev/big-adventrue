@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -6,4 +7,6 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-export { getRandomInteger };
+const formatDate = (date, format) => dayjs(date).format(format);
+
+export { getRandomInteger, formatDate };
