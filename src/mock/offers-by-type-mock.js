@@ -15,17 +15,16 @@ const generateOffers = () => {
       id: counter,
       title: lorem.generateWords(getRandomInteger(1, 2)),
       price: getRandomInteger(10, 200),
-  })
+    });
+
     counter++;
   }
 
   return listRandomListOffers;
 };
 
-export const generateOffersByType = () => {
-  return TYPES.map(item => ({
-    type: item,
-    offers: generateOffers()
-  }))
-}
+export const generateOffersByType = () => TYPES.map((item) => ({
+  type: item,
+  offers: generateOffers()
+}));
 

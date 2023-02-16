@@ -5,18 +5,19 @@ const createOffersTemplate = (offers, type, offersByType) => {
   const offersByCurrentType = offersByType.find((item) => item.type === type).offers;
   const offersById = offersByCurrentType.filter((item) => offers.includes(item.id));
 
-  return offersById.map(({ title, price }) => {
-    return (
-      `<li class="event__offer">
+  return offersById.map(({ title, price }) => (
+    `<li class="event__offer">
         <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${price}</span>
       </li>`
-    );
-  }).join('');
+  )).join('');
 };
 
-const createPointItemTemplate = ({ id, dateFrom, dateTo, basePrice, type, isFavorite, destination, offers }, offersByType) => {
+const createPointItemTemplate = (points, destinations, offersByType) => {
+  const { dateFrom, dateTo, basePrice, type, isFavorite, destination, offers } = points;
+
+  const destinationName = destinations.find((item) => item.id === destination).name;
 
   const isFavoriteItem = isFavorite
     ? 'event__favorite-btn--active'
@@ -29,7 +30,7 @@ const createPointItemTemplate = ({ id, dateFrom, dateTo, basePrice, type, isFavo
             <div class="event__type">
               <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
             </div>
-            <h3 class="event__title">${destination.name}</h3>
+            <h3 class="event__title">${destinationName}</h3>
             <div class="event__schedule">
               <p class="event__time">
                 <time class="event__start-time" datetime="${formatDate(dateFrom, 'YYYY-MM-DDTHH:mm')}">${formatDate(dateFrom, 'H:mm')}</time>
@@ -60,14 +61,15 @@ const createPointItemTemplate = ({ id, dateFrom, dateTo, basePrice, type, isFavo
 };
 
 export default class PointItemView {
-  constructor(point, offersByType) {
+  constructor(point, destinations, offersByType) {
     this.point = point;
+    this.destinations = destinations;
     this.offersByType = offersByType;
   }
 
 
   getTemplate() {
-    return createPointItemTemplate(this.point, this.offersByType);
+    return createPointItemTemplate(this.point, this.destinations, this.offersByType);
   }
 
   getElement() {

@@ -12,7 +12,7 @@ module.exports = {
   devServer: {
     port: 3000,
     allowedHosts: [
-      "big-trip.org",
+      'big-trip.org',
     ],
   },
   plugins: [

@@ -1,13 +1,16 @@
 import { generatePoint, generateType } from '../mock/point-mock';
 import { generateOffersByType } from '../mock/offers-by-type-mock';
+import { generateDestionation } from '../mock/destination-mock';
 
 
 export default class PointsModel {
 
   points = Array.from({length: 7}, (_, index) => generatePoint(index));
+  destinations = Array.from({length: 20}, (_, index) => generateDestionation(index))
   offersByType = generateOffersByType();
 
   getPoints = () => this.points;
+  getDestinations = () => this.destinations;
   getOffersByType = () => this.offersByType;
 }
 
