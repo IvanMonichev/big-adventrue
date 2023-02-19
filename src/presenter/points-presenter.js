@@ -50,17 +50,17 @@ export default class PointsPresenter {
       document.removeEventListener('keydown', handleEscKeyDown);
     };
 
-    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    pointComponent.setButtonClickHandler(() => {
       replacePointToForm();
       document.addEventListener('keydown', handleEscKeyDown, {once: true});
     });
 
-    editPointComponent.element.querySelector('form').addEventListener('submit', () => {
+    editPointComponent.setFormSubmitHandler(() => {
       replaceFormToPoint();
       removeListenerEscKeyDown();
     });
 
-    editPointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    editPointComponent.setButtonClickHandler(() => {
       replaceFormToPoint();
       removeListenerEscKeyDown();
     });

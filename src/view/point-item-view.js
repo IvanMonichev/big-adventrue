@@ -72,4 +72,14 @@ export default class PointItemView extends AbstractView {
   get template() {
     return createPointItemTemplate(this.point, this.destinations, this.offersByType);
   }
+
+  setButtonClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#handleButtonClick);
+  };
+
+  #handleButtonClick = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  };
 }

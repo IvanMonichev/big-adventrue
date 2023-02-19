@@ -4,7 +4,7 @@ import { generateDestionation } from '../mock/destination-mock';
 
 
 export default class PointsModel {
-  #points = Array.from({length: 0}, (_, index) => generatePoint(index));
+  #points = Array.from({length: 10}, (_, index) => generatePoint(index));
   #destinations = Array.from({length: 20}, (_, index) => generateDestionation(index))
   #offersByType = generateOffersByType();
 
