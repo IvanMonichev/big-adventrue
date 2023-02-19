@@ -9,4 +9,10 @@ const getRandomInteger = (a = 0, b = 1) => {
 
 const formatDate = (date, format) => dayjs(date).format(format);
 
-export { getRandomInteger, formatDate };
+const isEscape = (evt) => (evt.key === 'Escape' || evt.key === 'Esc');
+
+export {
+  getRandomInteger,
+  formatDate,
+  isEscape
+};

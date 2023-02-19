@@ -17,10 +17,7 @@ const TYPES = [
   'restaurant'
 ];
 
-const POINT_COUNT = 3;
-
 export {
   RenderPosition,
-  POINT_COUNT,
-  TYPES
-}
+  TYPES,
+};
