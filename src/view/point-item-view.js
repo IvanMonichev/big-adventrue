@@ -1,5 +1,6 @@
 import { createElement } from '../utils/render';
 import { formatDate } from '../utils/helpers';
+import AbstractView from '../framework/view/abstract-view';
 
 const createOffersTemplate = (offers, type, offersByType) => {
   const offersByCurrentType = offersByType.find((item) => item.type === type).offers;
@@ -60,28 +61,15 @@ const createPointItemTemplate = (points, destinations, offersByType) => {
   );
 };
 
-export default class PointItemView {
-  #element = null;
+export default class PointItemView extends AbstractView {
   constructor(point, destinations, offersByType) {
+    super();
     this.point = point;
     this.destinations = destinations;
     this.offersByType = offersByType;
   }
 
-
   get template() {
     return createPointItemTemplate(this.point, this.destinations, this.offersByType);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

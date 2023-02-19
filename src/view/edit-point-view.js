@@ -1,5 +1,6 @@
 import { createElement } from '../utils/render';
 import { formatDate } from '../utils/helpers';
+import AbstractView from '../framework/view/abstract-view';
 
 const createOffersTemplate = (type, offers, offersByType) => {
   const offersByCurrentType = offersByType.find((element) => element.type === type).offers;
@@ -112,13 +113,13 @@ const createEditPointTemplate = (points, destinations, offersByType) => {
   );
 };
 
-export default class EditPointView {
-  #element = null;
+export default class EditPointView extends AbstractView{
   #points = null;
   #destinations = null;
   #offersByType = null;
 
   constructor(points, destinations, offersByType) {
+    super();
     this.#points = points;
     this.#destinations = destinations;
     this.#offersByType = offersByType;
@@ -126,17 +127,5 @@ export default class EditPointView {
 
   get template() {
     return createEditPointTemplate(this.#points, this.#destinations, this.#offersByType);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

@@ -1,5 +1,6 @@
 import { createElement } from '../utils/render';
 import { formatDate } from '../utils/helpers';
+import AbstractView from '../framework/view/abstract-view';
 
 const createPicturesTemplate = (pictures) => pictures.map(({ src, description }) => `<img class="event__photo" src="${src}" alt="${description}"></img>`).join('');
 
@@ -110,29 +111,17 @@ const createAddPointTemplate = (destinations, offersByType) => {
   );
 };
 
-export default class AddPointView {
-  #element = null;
+export default class AddPointView extends AbstractView{
   #destinations = null;
   #offersByType = null;
 
   constructor(destinations, offersByType) {
+    super();
     this.#destinations = destinations;
     this.#offersByType = offersByType;
   }
 
   get template() {
     return createAddPointTemplate(this.#destinations, this.#offersByType);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
