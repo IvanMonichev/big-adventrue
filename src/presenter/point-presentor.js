@@ -5,9 +5,6 @@ import { isEscape } from '../utils/point-utils';
 
 
 export default class PointPresenter {
-  #point = null;
-  #destinations = null;
-  #offersBtType = null;
   #pointComponent = null;
   #editPointComponent = null;
   #container = null;
@@ -69,7 +66,6 @@ export default class PointPresenter {
 
   #formSubmitHandler = () => {
     this.#replaceFormToPoint();
-    console.log('Форма выполнена.');
   };
 
   #escKeyDownHandler = (evt) => {
