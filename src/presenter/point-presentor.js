@@ -1,6 +1,6 @@
 import PointItemView from '../view/point-item-view';
 import EditPointView from '../view/edit-point-view';
-import { render, replace } from '../framework/render';
+import { remove, render, replace } from '../framework/render';
 import { isEscape } from '../utils/point-utils';
 
 
@@ -17,6 +17,10 @@ export default class PointPresenter {
   }
 
   init = (point, destinations, offersBtType) => {
+
+    const prevPontComponent = this.#pointComponent;
+    const prevEditPointComponent = this.#editPointComponent;
+
     // Создаём экземпляры компонентов
     this.#pointComponent = new PointItemView(point, destinations, offersBtType);
     this.#editPointComponent = new EditPointView(point, destinations, offersBtType);
@@ -26,7 +30,23 @@ export default class PointPresenter {
     this.#editPointComponent.setButtonClickHandler(this.#closeButtonClickHandler);
     this.#editPointComponent.setFormSubmitHandler(this.#formSubmitHandler);
 
-    render(this.#pointComponent, this.#container);
+    // Проверка на отсутствие элементов
+    if (prevPontComponent === null || prevEditPointComponent === null) {
+      render(this.#pointComponent, this.#container);
+      return;
+    }
+
+    // Проверка на наличие в DOM для оптимизации
+    if (this.#container.contains(prevPontComponent.element)) {
+      replace(this.#pointComponent, prevPontComponent);
+    }
+
+    if (this.#container.contains(prevPontComponent.element)) {
+      replace(this.#editPointComponent, prevPontComponent);
+    }
+
+    remove(prevPontComponent);
+    remove(prevEditPointComponent);
   };
 
   #replacePointToForm = () => {
