@@ -1,4 +1,3 @@
-import { createElement } from '../utils/render';
 import { formatDate } from '../utils/helpers';
 import AbstractView from '../framework/view/abstract-view';
 
@@ -75,10 +74,10 @@ export default class PointItemView extends AbstractView {
 
   setButtonClickHandler = (callback) => {
     this._callback.click = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#handleButtonClick);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#buttonCliclHandler);
   };
 
-  #handleButtonClick = (evt) => {
+  #buttonCliclHandler = (evt) => {
     evt.preventDefault();
     this._callback.click();
   };

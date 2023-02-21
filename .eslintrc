@@ -1,12 +1,9 @@
-root: true
-
 parserOptions:
-  ecmaVersion: 2022
-  sourceType: "module"
+  ecmaVersion: latest
+  sourceType: 'module'
 
 env:
   es2017: true
   browser: true
 
-extends:
-  "htmlacademy/vanilla"
+extends: 'htmlacademy/vanilla'

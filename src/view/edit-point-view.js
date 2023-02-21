@@ -1,4 +1,3 @@
-import { createElement } from '../utils/render';
 import { formatDate } from '../utils/helpers';
 import AbstractView from '../framework/view/abstract-view';
 
@@ -131,20 +130,20 @@ export default class EditPointView extends AbstractView{
 
   setButtonClickHandler = (callback) => {
     this._callback.click = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#handleButtonClick);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#buttonClickHandler);
   };
 
-  #handleButtonClick = (evt) => {
+  #buttonClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.click();
   };
 
   setFormSubmitHandler = (callback) => {
     this._callback.submit = callback;
-    this.element.querySelector('form').addEventListener('submit', this.#handleFormSubmit);
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   };
 
-  #handleFormSubmit = (evt) => {
+  #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.submit();
   };

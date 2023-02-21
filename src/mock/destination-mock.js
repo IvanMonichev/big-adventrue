@@ -9,12 +9,10 @@ const generateName = () => {
   return countryList[randomIndex];
 };
 
-const generatePictures = (amount) => {
-  return Array.from({length: amount}, () => ({
-    src: `http://picsum.photos/300/200?r=${getRandomInteger(0, 100)}`,
-    description: lorem.generateWords(getRandomInteger(3, 6)),
-  }));
-};
+const generatePictures = (amount) => Array.from({length: amount}, () => ({
+  src: `http://picsum.photos/300/200?r=${getRandomInteger(0, 100)}`,
+  description: lorem.generateWords(getRandomInteger(3, 6)),
+}));
 
 export const generateDestionation = (id) => ({
   id,

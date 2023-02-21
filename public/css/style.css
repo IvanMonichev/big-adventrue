@@ -307,6 +307,7 @@ main {
     cursor: default; }
 
 .trip-events {
+  list-style: none;
   padding-top: 22px; }
   .trip-events--hidden {
     display: none; }

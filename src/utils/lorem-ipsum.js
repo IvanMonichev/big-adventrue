@@ -9,4 +9,4 @@ export const lorem = new LoremIpsum({
     min: 5,
     max: 14,
   }
-})
+});

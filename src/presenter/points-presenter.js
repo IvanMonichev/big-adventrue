@@ -4,6 +4,7 @@ import ListView from '../view/list-view';
 import EditPointView from '../view/edit-point-view';
 import { isEscape } from '../utils/helpers';
 import ListEmptyView from '../view/list-empty-view';
+import PointPresenter from './point-presentor';
 
 export default class PointsPresenter {
   #listViewComponent = new ListView();
@@ -23,49 +24,12 @@ export default class PointsPresenter {
     this.#listPoints = [...this.#pointsModel.points];
     this.#listDestinations = [...this.#pointsModel.destinations];
     this.#listOffers = [...this.#pointsModel.offersByType];
-
     this.#renderPoints();
   };
 
-  #renderPoint = (points, destinations, offersBtType) => {
-    const pointComponent = new PointItemView(points, destinations, offersBtType);
-    const editPointComponent = new EditPointView(points, destinations, offersBtType);
-
-    const replacePointToForm = () => {
-      this.#listViewComponent.element.replaceChild(editPointComponent.element, pointComponent.element);
-    };
-
-    const replaceFormToPoint = () => {
-      this.#listViewComponent.element.replaceChild(pointComponent.element, editPointComponent.element);
-    };
-
-    const handleEscKeyDown = (evt) => {
-      if (isEscape(evt) || evt.key === 'ArrowUp') {
-        evt.preventDefault();
-        replaceFormToPoint();
-      }
-    };
-
-    const removeListenerEscKeyDown = () => {
-      document.removeEventListener('keydown', handleEscKeyDown);
-    };
-
-    pointComponent.setButtonClickHandler(() => {
-      replacePointToForm();
-      document.addEventListener('keydown', handleEscKeyDown, {once: true});
-    });
-
-    editPointComponent.setFormSubmitHandler(() => {
-      replaceFormToPoint();
-      removeListenerEscKeyDown();
-    });
-
-    editPointComponent.setButtonClickHandler(() => {
-      replaceFormToPoint();
-      removeListenerEscKeyDown();
-    });
-
-    render(pointComponent, this.#listViewComponent.element);
+  #renderPoint = (point, destinations, offersBtType) => {
+    const pointPresenter = new PointPresenter(this.#pointsContainer);
+    pointPresenter.init(point, destinations, offersBtType);
   };
 
   #renderPoints = () => {
