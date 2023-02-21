@@ -1,5 +1,4 @@
-import { createElement } from '../utils/render';
-import { formatDate } from '../utils/helpers';
+import { formatDate } from '../utils/point-utils';
 import AbstractView from '../framework/view/abstract-view';
 
 const createPicturesTemplate = (pictures) => pictures.map(({ src, description }) => `<img class="event__photo" src="${src}" alt="${description}"></img>`).join('');

@@ -1,7 +1,7 @@
 import PointItemView from '../view/point-item-view';
 import EditPointView from '../view/edit-point-view';
 import { render, replace } from '../framework/render';
-import { isEscape } from '../utils/helpers';
+import { isEscape } from '../utils/point-utils';
 
 
 export default class PointPresenter {

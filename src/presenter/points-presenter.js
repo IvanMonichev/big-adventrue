@@ -1,10 +1,7 @@
-import { render } from '../utils/render';
-import PointItemView from '../view/point-item-view';
 import ListView from '../view/list-view';
-import EditPointView from '../view/edit-point-view';
-import { isEscape } from '../utils/helpers';
 import ListEmptyView from '../view/list-empty-view';
 import PointPresenter from './point-presentor';
+import { render } from '../framework/render';
 
 export default class PointsPresenter {
   #listViewComponent = new ListView();

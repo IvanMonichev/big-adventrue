@@ -1,7 +1,6 @@
-import { getRandomInteger } from '../utils/helpers';
-import { generateDestionation } from './destination-mock';
+import { getRandomInteger } from '../utils/common-utils';
 import dayjs from 'dayjs';
-import { TYPES } from '../utils/constants';
+import { TYPES } from '../constants/constants';
 
 const generateType = () => {
 

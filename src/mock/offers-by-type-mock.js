@@ -1,6 +1,6 @@
-import { getRandomInteger } from '../utils/helpers';
-import { lorem } from '../utils/lorem-ipsum';
-import { TYPES } from '../utils/constants';
+import { getRandomInteger } from '../utils/common-utils';
+import { lorem } from '../vendor/lorem-ipsum';
+import { TYPES } from '../constants/constants';
 
 
 const generateOffers = () => {

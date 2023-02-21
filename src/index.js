@@ -1,4 +1,4 @@
-import { render, RenderPosition } from './utils/render';
+import { render, RenderPosition } from './framework/render';
 import FilterView from './view/filter-view';
 import SortView from './view/sort-view';
 import PointsPresenter from './presenter/points-presenter';

@@ -1,4 +1,4 @@
-import { formatDate } from '../utils/helpers';
+import { formatDate } from '../utils/point-utils';
 import AbstractView from '../framework/view/abstract-view';
 
 const createOffersTemplate = (type, offers, offersByType) => {
