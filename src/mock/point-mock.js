@@ -1,6 +1,7 @@
 import { getRandomInteger } from '../utils/common-utils';
 import dayjs from 'dayjs';
 import { TYPES } from '../constants/constants';
+import { customAlphabet } from 'nanoid';
 
 const generateType = () => {
 
@@ -29,8 +30,10 @@ const generateDate = () => {
   return dayjs().add(daysGap, 'millisecond').toDate();
 };
 
-const generatePoint = (id) => ({
-  id,
+const pointId = customAlphabet('1234567890', 7);
+
+const generatePoint = () => ({
+  id: pointId(),
   dateFrom: generateDate(),
   dateTo: generateDate(),
   basePrice: getRandomInteger(20, 150),

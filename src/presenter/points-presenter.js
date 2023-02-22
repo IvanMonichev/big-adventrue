@@ -12,6 +12,8 @@ export default class PointsPresenter {
   #listDestinations = null;
   #listOffers = null;
 
+  #pointPresenters = new Map();
+
   constructor(pointsContainer, pointsModel) {
     this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
@@ -27,6 +29,8 @@ export default class PointsPresenter {
   #renderPoint = (point, destinations, offersBtType) => {
     const pointPresenter = new PointPresenter(this.#pointsContainer);
     pointPresenter.init(point, destinations, offersBtType);
+
+    this.#pointPresenters.set(point.id, pointPresenter);
   };
 
   #renderPoints = () => {
@@ -38,5 +42,10 @@ export default class PointsPresenter {
         this.#renderPoint(this.#listPoints[i], this.#listDestinations, this.#listOffers);
       }
     }
+  };
+
+  #clearPointList = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
   };
 }
