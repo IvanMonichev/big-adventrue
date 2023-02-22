@@ -65,7 +65,7 @@ const createEditPointTemplate = (points, destinations, offersByType) => {
            <label class="event__label  event__type-output" for="event-destination-1">
              ${type}
            </label>
-           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="${destinationName}" value="Chamonix" list="destination-list-1">
+           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="${destinationName}" value="${destinationName}" list="destination-list-1">
            <datalist id="destination-list-1">
              ${createDestinationListTemplate(destinations)}
            </datalist>
