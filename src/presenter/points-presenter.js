@@ -1,7 +1,8 @@
 import ListView from '../view/list-view';
 import ListEmptyView from '../view/list-empty-view';
-import PointPresenter from './point-presentor';
+import PointPresenter from './point-presenter';
 import { render } from '../framework/render';
+import { updateItem } from '../utils/point-utils';
 
 export default class PointsPresenter {
   #listViewComponent = new ListView();
@@ -26,8 +27,13 @@ export default class PointsPresenter {
     this.#renderPoints();
   };
 
+  #pointUpdateHandler = (updatedPoint, destinations, offersByType) => {
+    this.#listPoints = updateItem(this.#listPoints, updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint, destinations, offersByType);
+  };
+
   #renderPoint = (point, destinations, offersBtType) => {
-    const pointPresenter = new PointPresenter(this.#pointsContainer);
+    const pointPresenter = new PointPresenter(this.#pointsContainer, this.#pointUpdateHandler);
     pointPresenter.init(point, destinations, offersBtType);
 
     this.#pointPresenters.set(point.id, pointPresenter);

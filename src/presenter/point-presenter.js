@@ -8,9 +8,11 @@ export default class PointPresenter {
   #pointComponent = null;
   #editPointComponent = null;
   #container = null;
+  #updateData = null;
 
-  constructor(container) {
+  constructor(container, updateData) {
     this.#container = container;
+    this.#updateData = updateData;
   }
 
   init = (point, destinations, offersBtType) => {
@@ -69,7 +71,8 @@ export default class PointPresenter {
     this.#replaceFormToPoint();
   };
 
-  #formSubmitHandler = () => {
+  #formSubmitHandler = (point, destinations, offersByType) => {
+    this.#updateData(point, destinations, offersByType);
     this.#replaceFormToPoint();
   };
 
