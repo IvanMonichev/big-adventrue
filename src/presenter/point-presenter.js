@@ -9,9 +9,12 @@ export default class PointPresenter {
   #mode = Mode.DEFAULT;
   #changeMode = null;
   #pointComponent = null;
+  #destinations = null;
+  #offersBtType = null;
   #editPointComponent = null;
   #container = null;
   #updateData = null;
+  #point = null;
 
   constructor(container, updateData, changeMode) {
     this.#container = container;
@@ -20,6 +23,9 @@ export default class PointPresenter {
   }
 
   init = (point, destinations, offersBtType) => {
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#offersBtType = offersBtType;
 
     const prevPontComponent = this.#pointComponent;
     const prevEditPointComponent = this.#editPointComponent;
@@ -30,6 +36,7 @@ export default class PointPresenter {
 
     // Вешаем слушатели через колбэк
     this.#pointComponent.setButtonClickHandler(this.#editButtonClickHandler);
+    this.#pointComponent.setFavoriteBtnClickHandler(this.#favoriteBtnClickHandler)
     this.#editPointComponent.setButtonClickHandler(this.#closeButtonClickHandler);
     this.#editPointComponent.setFormSubmitHandler(this.#formSubmitHandler);
 
@@ -88,6 +95,11 @@ export default class PointPresenter {
     this.#updateData(point, destinations, offersByType);
     this.#replaceFormToPoint();
   };
+
+  #favoriteBtnClickHandler = () => {
+    console.log({ ...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#updateData({ ...this.#point, isFavorite: !this.#point.isFavorite}, this.#destinations, this.#offersBtType);
+  }
 
   #escKeyDownHandler = (evt) => {
     if (isEscape(evt) || evt.key === 'ArrowUp') {
