@@ -34,8 +34,12 @@ export default class PointsPresenter {
     this.#pointPresenters.get(updatedPoint.id).init(updatedPoint, destinations, offersByType);
   };
 
+  #modeChangeHandler = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.resetView());
+  };
+
   #renderPoint = (point, destinations, offersBtType) => {
-    const pointPresenter = new PointPresenter(this.#pointsContainer, this.#pointUpdateHandler);
+    const pointPresenter = new PointPresenter(this.#pointsContainer, this.#pointUpdateHandler, this.#modeChangeHandler);
     pointPresenter.init(point, destinations, offersBtType);
 
     this.#pointPresenters.set(point.id, pointPresenter);

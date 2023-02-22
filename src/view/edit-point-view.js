@@ -145,6 +145,7 @@ export default class EditPointView extends AbstractView{
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.submit();
+    console.log(this.#points, this.#destinations, this.#offersByType);
+    this._callback.submit(this.#points, this.#destinations, this.#offersByType);
   };
 }

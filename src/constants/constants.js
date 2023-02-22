@@ -17,7 +17,13 @@ const TYPES = [
   'restaurant'
 ];
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export {
   RenderPosition,
   TYPES,
+  Mode
 };

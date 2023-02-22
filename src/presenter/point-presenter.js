@@ -2,17 +2,21 @@ import PointItemView from '../view/point-item-view';
 import EditPointView from '../view/edit-point-view';
 import { remove, render, replace } from '../framework/render';
 import { isEscape } from '../utils/point-utils';
+import { Mode } from '../constants/constants';
 
 
 export default class PointPresenter {
+  #mode = Mode.DEFAULT;
+  #changeMode = null;
   #pointComponent = null;
   #editPointComponent = null;
   #container = null;
   #updateData = null;
 
-  constructor(container, updateData) {
+  constructor(container, updateData, changeMode) {
     this.#container = container;
     this.#updateData = updateData;
+    this.#changeMode = changeMode;
   }
 
   init = (point, destinations, offersBtType) => {
@@ -36,17 +40,23 @@ export default class PointPresenter {
     }
 
     // Проверка на наличие в DOM для оптимизации
-    if (this.#container.contains(prevPontComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#pointComponent, prevPontComponent);
     }
 
-    if (this.#container.contains(prevPontComponent.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#editPointComponent, prevPontComponent);
     }
 
     remove(prevPontComponent);
     remove(prevEditPointComponent);
   };
+
+  resetView = () => {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToPoint();
+    }
+  }
 
   destroy = () => {
     remove(this.#pointComponent);
@@ -56,11 +66,14 @@ export default class PointPresenter {
   #replacePointToForm = () => {
     replace(this.#editPointComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#changeMode();
+    this.#mode = Mode.EDITING;
   };
 
   #replaceFormToPoint = () => {
     replace(this.#pointComponent, this.#editPointComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
   };
 
   #editButtonClickHandler = () => {
