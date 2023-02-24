@@ -47,6 +47,7 @@ export default class PointsPresenter {
 
   #renderSorting = () => {
     render(this.#sortingComponent, this.#pointsContainer);
+    this.#sortingComponent.setSortingTypeChangeHandler(this.#sortingTypeChangeHandler);
   };
 
   #renderList = () => {
@@ -69,6 +70,10 @@ export default class PointsPresenter {
       }
     }
   };
+
+  #sortingTypeChangeHandler = (sortingType) => {
+    console.log(sortingType);
+  }
 
   #clearPointList = () => {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());

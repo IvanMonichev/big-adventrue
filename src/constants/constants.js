@@ -22,8 +22,17 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
+const SortingType = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers'
+};
+
 export {
   RenderPosition,
   TYPES,
-  Mode
+  Mode,
+  SortingType
 };
