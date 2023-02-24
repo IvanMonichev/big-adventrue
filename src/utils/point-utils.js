@@ -15,8 +15,14 @@ const updateItem = (items, update) => {
   return [...items.slice(0, index), update, ...items.slice(index + 1)];
 };
 
+const sortPointsByTime = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
+
+const sortPointsByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
+
 export {
   formatDate,
   isEscape,
-  updateItem
+  updateItem,
+  sortPointsByTime,
+  sortPointsByPrice
 };

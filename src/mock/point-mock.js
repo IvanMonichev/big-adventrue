@@ -25,9 +25,9 @@ const getRandomListIndex = (amount) => {
 };
 
 const generateDate = () => {
-  const maxDaysGap = 7;
+  const maxDaysGap = getRandomInteger(7, 60);
   const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
-  return dayjs().add(daysGap, 'millisecond').toDate();
+  return dayjs().add(daysGap, 'days').toDate();
 };
 
 const pointId = customAlphabet('1234567890', 7);

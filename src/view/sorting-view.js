@@ -1,9 +1,10 @@
 import AbstractView from '../framework/view/abstract-view';
 import { SortingType } from '../constants/constants';
+import { isChecked } from '../utils/sorting-utils';
 
 const createSortingItemTemplate = (sortingType) => sortingType.map((type) =>
   `<div class="trip-sort__item  trip-sort__item--${type}">
-     <input id="sort-${type}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${type}" data-sorting-type="${type}" checked>
+     <input id="sort-${type}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${type}" data-sorting-type="${type}" ${isChecked(type)}>
      <label class="trip-sort__btn" for="sort-${type}">${type}</label>
    </div>`
 ).join('');

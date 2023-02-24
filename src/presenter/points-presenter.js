@@ -2,8 +2,9 @@ import ListView from '../view/list-view';
 import ListEmptyView from '../view/list-empty-view';
 import PointPresenter from './point-presenter';
 import { render } from '../framework/render';
-import { updateItem } from '../utils/point-utils';
+import { sortPointsByPrice, sortPointsByTime, updateItem } from '../utils/point-utils';
 import SortingView from '../view/sorting-view';
+import { SortingType } from '../constants/constants';
 
 export default class PointsPresenter {
   #listViewComponent = new ListView();
@@ -16,6 +17,8 @@ export default class PointsPresenter {
   #listOffers = null;
 
   #pointPresenters = new Map();
+  #sourcedPoints = [];
+  #currentSortingType = SortingType.DAY;
 
   constructor(pointsContainer, pointsModel) {
     this.#pointsContainer = pointsContainer;
@@ -26,6 +29,8 @@ export default class PointsPresenter {
     this.#listPoints = [...this.#pointsModel.points];
     this.#listDestinations = [...this.#pointsModel.destinations];
     this.#listOffers = [...this.#pointsModel.offersByType];
+    this.#sourcedPoints = [...this.#pointsModel.points];
+    this.#sortPoints(this.#currentSortingType);
     this.#renderPoints();
   };
 
@@ -71,9 +76,25 @@ export default class PointsPresenter {
     }
   };
 
+  #sortPoints = (sortingType) => {
+    switch (sortingType) {
+      case SortingType.TIME:
+        this.#listPoints.sort(sortPointsByTime);
+        break;
+      case SortingType.PRICE:
+        this.#listPoints.sort(sortPointsByPrice);
+        break;
+      default:
+        this.#listPoints = [...this.#sourcedPoints];
+    }
+  };
+
   #sortingTypeChangeHandler = (sortingType) => {
-    console.log(sortingType);
-  }
+    this.#sortPoints(sortingType);
+
+    this.#clearPointList();
+    this.#renderPoints();
+  };
 
   #clearPointList = () => {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
