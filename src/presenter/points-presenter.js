@@ -1,15 +1,15 @@
 import ListView from '../view/list-view';
 import ListEmptyView from '../view/list-empty-view';
 import PointPresenter from './point-presenter';
-import { render } from '../framework/render';
-import { sortPointsByPrice, sortPointsByTime, updateItem } from '../utils/point-utils';
+import { remove, render } from '../framework/render';
+import { sortPointsByPrice, sortPointsByTime } from '../utils/point-utils';
 import SortingView from '../view/sorting-view';
-import { SortingType } from '../constants/constants';
+import { SortingType, UpdateType, UserAction } from '../constants/constants';
 
 export default class PointsPresenter {
   #listViewComponent = new ListView();
   #listEmptyComponent = new ListEmptyView();
-  #sortingComponent = new SortingView();
+  #sortingComponent = null;
   #pointsContainer = null;
   #pointsModel = null;
   #listDestinations = null;
@@ -21,6 +21,8 @@ export default class PointsPresenter {
   constructor(pointsContainer, pointsModel) {
     this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
+
+    this.#pointsModel.addObserver(this.#modelEventHandler);
   }
 
   init = () => {
@@ -40,9 +42,34 @@ export default class PointsPresenter {
     return this.#pointsModel.points;
   }
 
-  #pointUpdateHandler = (updatedPoint, destinations, offersByType) => {
-    // Место для вызова модели
-    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint, destinations, offersByType);
+  #viewActionHandler = (actionType, updateType, update) => {
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this.#pointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this.#pointsModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this.#pointsModel.deletePoint(updateType, update);
+        break;
+    }
+  };
+
+  #modelEventHandler = (updateType, data) => {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#pointPresenters.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        this.#clearPointList();
+        this.#renderPoints();
+        break;
+      case UpdateType.MAJOR:
+        this.#clearPointList({resetSortingType: true});
+        this.#renderPoints();
+        break;
+    }
   };
 
   #modeChangeHandler = () => {
@@ -50,15 +77,16 @@ export default class PointsPresenter {
   };
 
   #renderPoint = (point, destinations, offersBtType) => {
-    const pointPresenter = new PointPresenter(this.#pointsContainer, this.#pointUpdateHandler, this.#modeChangeHandler);
+    const pointPresenter = new PointPresenter(this.#pointsContainer, this.#viewActionHandler, this.#modeChangeHandler);
     pointPresenter.init(point, destinations, offersBtType);
 
     this.#pointPresenters.set(point.id, pointPresenter);
   };
 
   #renderSorting = () => {
-    render(this.#sortingComponent, this.#pointsContainer);
+    this.#sortingComponent = new SortingView(this.#currentSortingType);
     this.#sortingComponent.setSortingTypeChangeHandler(this.#sortingTypeChangeHandler);
+    render(this.#sortingComponent, this.#pointsContainer);
   };
 
   #renderList = () => {
@@ -75,7 +103,7 @@ export default class PointsPresenter {
     } else {
       this.#renderSorting();
       this.#renderList();
-      this.points.forEach((point) => this.#renderPoint(point, this.#listDestinations, this.#listOffers))
+      this.points.forEach((point) => this.#renderPoint(point, this.#listDestinations, this.#listOffers));
     }
   };
 
@@ -89,8 +117,16 @@ export default class PointsPresenter {
     this.#renderPoints();
   };
 
-  #clearPointList = () => {
+  // Метод для очистки списка элементов, установка метода сортировки по умолчанию
+  #clearPointList ({resetSortingType = false} = {}) {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
-  };
+
+    remove(this.#sortingComponent);
+    remove(this.#listEmptyComponent);
+
+    if (resetSortingType) {
+      this.#currentSortingType = SortingType.DAY;
+    }
+  }
 }

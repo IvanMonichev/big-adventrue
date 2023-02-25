@@ -3,9 +3,9 @@ import { SortingType } from '../constants/constants';
 import { isChecked } from '../utils/sorting-utils';
 import { isDemandElement } from '../utils/common-utils';
 
-const createSortingItemTemplate = (sortingType) => sortingType.map((type) =>
+const createSortingItemTemplate = (sortingType, defaultType) => sortingType.map((type) =>
   `<div class="trip-sort__item  trip-sort__item--${type}">
-     <input id="sort-${type}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${type}" data-sorting-type="${type}" ${isChecked(type)}>
+     <input id="sort-${type}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${type}" data-sorting-type="${type}" ${isChecked(type, defaultType)}>
      <label class="trip-sort__btn" for="sort-${type}">${type}</label>
    </div>`
 ).join('');
@@ -17,8 +17,13 @@ const createSortingTemplate = (sortingType) => (
 );
 
 export default class SortingView extends AbstractView {
+  #currentSortingType = null;
+  constructor(currentSortingType) {
+    super();
+    this.#currentSortingType = currentSortingType;
+  }
   get template() {
-    return createSortingTemplate(SortingType);
+    return createSortingTemplate(SortingType, this.#currentSortingType);
   }
 
   setSortingTypeChangeHandler = (callback) => {

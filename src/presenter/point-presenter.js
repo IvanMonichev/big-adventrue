@@ -2,7 +2,7 @@ import PointItemView from '../view/point-item-view';
 import EditPointView from '../view/edit-point-view';
 import { remove, render, replace } from '../framework/render';
 import { isEscape } from '../utils/point-utils';
-import { Mode } from '../constants/constants';
+import { Mode, UpdateType, UserAction } from '../constants/constants';
 
 
 export default class PointPresenter {
@@ -13,12 +13,12 @@ export default class PointPresenter {
   #offersBtType = null;
   #editPointComponent = null;
   #container = null;
-  #updateData = null;
+  #changeData = null;
   #point = null;
 
-  constructor(container, updateData, changeMode) {
+  constructor(container, changeData, changeMode) {
     this.#container = container;
-    this.#updateData = updateData;
+    this.#changeData = changeData;
     this.#changeMode = changeMode;
   }
 
@@ -36,9 +36,10 @@ export default class PointPresenter {
 
     // Вешаем слушатели через колбэк
     this.#pointComponent.setButtonClickHandler(this.#editButtonClickHandler);
-    this.#pointComponent.setFavoriteBtnClickHandler(this.#favoriteBtnClickHandler)
+    this.#pointComponent.setFavoriteBtnClickHandler(this.#favoriteClickHandler);
     this.#editPointComponent.setButtonClickHandler(this.#closeButtonClickHandler);
     this.#editPointComponent.setFormSubmitHandler(this.#formSubmitHandler);
+    this.#editPointComponent.setDeleteClickHandler(this.#deleteClickHandler);
 
     // Проверка на отсутствие элементов
     if (prevPontComponent === null || prevEditPointComponent === null) {
@@ -93,14 +94,17 @@ export default class PointPresenter {
     this.#replaceFormToPoint();
   };
 
-  #formSubmitHandler = (point, destinations, offersByType) => {
-    this.#updateData(point, destinations, offersByType);
+  #formSubmitHandler = (point) => {
+    this.#changeData(UserAction.UPDATE_POINT, UpdateType.MINOR,  point);
     this.#replaceFormToPoint();
   };
 
-  #favoriteBtnClickHandler = () => {
-    console.log({ ...this.#point, isFavorite: !this.#point.isFavorite});
-    this.#updateData({ ...this.#point, isFavorite: !this.#point.isFavorite}, this.#destinations, this.#offersBtType);
+  #deleteClickHandler = (point) => {
+    this.#changeData(UserAction.DELETE_POINT, UpdateType.MINOR, point);
+  }
+
+  #favoriteClickHandler = () => {
+    this.#changeData(UserAction.UPDATE_POINT, UpdateType.MINOR, { ...this.#point, isFavorite: !this.#point.isFavorite });
   }
 
   #escKeyDownHandler = (evt) => {
