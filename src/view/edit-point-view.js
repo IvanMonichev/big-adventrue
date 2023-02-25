@@ -160,9 +160,9 @@ export default class EditPointView extends AbstractStatefulView {
   };
 
   #setInnerHandlers = () => {
-    this.element.addEventListener('input', this.#offerChangeHandler);
-    this.element.addEventListener('input', this.#pointTypeChangeHandler);
-    this.element.addEventListener('input', this.#destinationChangeHandler);
+    this.element.addEventListener('change', this.#offerChangeHandler);
+    this.element.addEventListener('change', this.#pointTypeChangeHandler);
+    this.element.addEventListener('change', this.#destinationChangeHandler);
   };
 
   #offerChangeHandler = (evt) => {
@@ -200,7 +200,10 @@ export default class EditPointView extends AbstractStatefulView {
     evt.preventDefault();
 
     const findDestination = this.#destinations.find((destination) => destination.name === evt.target.value);
-    this.updateElement({ destination: findDestination.id });
+
+    if (findDestination) {
+      this.updateElement({ destination: findDestination.id });
+    }
   };
 
   _restoreHandlers = () => {
