@@ -3,16 +3,16 @@ import { SortingType } from '../constants/constants';
 import { isChecked } from '../utils/sorting-utils';
 import { isDemandElement } from '../utils/common-utils';
 
-const createSortingItemTemplate = (sortingType, defaultType) => sortingType.map((type) =>
+const createSortingItemTemplate = (sortingType, currentType) => sortingType.map((type) =>
   `<div class="trip-sort__item  trip-sort__item--${type}">
-     <input id="sort-${type}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${type}" data-sorting-type="${type}" ${isChecked(type, defaultType)}>
+     <input id="sort-${type}" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-${type}" data-sorting-type="${type}" ${isChecked(type, currentType)}>
      <label class="trip-sort__btn" for="sort-${type}">${type}</label>
    </div>`
 ).join('');
 
-const createSortingTemplate = (sortingType) => (
+const createSortingTemplate = (sortingType, currentType) => (
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
-      ${createSortingItemTemplate(Object.values(sortingType))}
+      ${createSortingItemTemplate(Object.values(sortingType), currentType)}
    </form>`
 );
 

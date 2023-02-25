@@ -5,6 +5,7 @@ import { remove, render } from '../framework/render';
 import { sortPointsByPrice, sortPointsByTime } from '../utils/point-utils';
 import SortingView from '../view/sorting-view';
 import { SortingType, UpdateType, UserAction } from '../constants/constants';
+import { filter } from '../utils/filter-utils';
 
 export default class PointsPresenter {
   #listViewComponent = new ListView();
@@ -14,15 +15,18 @@ export default class PointsPresenter {
   #pointsModel = null;
   #listDestinations = null;
   #listOffers = null;
+  #filterModel = null;
 
   #pointPresenters = new Map();
   #currentSortingType = SortingType.DAY;
 
-  constructor(pointsContainer, pointsModel) {
+  constructor(pointsContainer, pointsModel, filterModel) {
     this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
+    this.#filterModel = filterModel;
 
     this.#pointsModel.addObserver(this.#modelEventHandler);
+    this.#filterModel.addObserver(this.#modelEventHandler);
   }
 
   init = () => {
@@ -32,14 +36,18 @@ export default class PointsPresenter {
   };
 
   get points() {
+    const filterType = this.#filterModel.filter;
+    const points = this.#pointsModel.points;
+    const filterPoints = filter[filterType](points);
+
     switch (this.#currentSortingType) {
       case SortingType.TIME:
-        return [...this.#pointsModel.points].sort(sortPointsByTime);
+        return filterPoints.sort(sortPointsByTime);
       case SortingType.PRICE:
-        return [...this.#pointsModel.points].sort(sortPointsByPrice);
+        return filterPoints.sort(sortPointsByPrice);
     }
 
-    return this.#pointsModel.points;
+    return filterPoints;
   }
 
   #viewActionHandler = (actionType, updateType, update) => {
@@ -123,6 +131,7 @@ export default class PointsPresenter {
     this.#pointPresenters.clear();
 
     remove(this.#sortingComponent);
+    remove(this.#listViewComponent);
     remove(this.#listEmptyComponent);
 
     if (resetSortingType) {

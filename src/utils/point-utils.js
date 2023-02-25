@@ -9,9 +9,14 @@ const sortPointsByTime = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(p
 
 const sortPointsByPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
 
+const isPointPast = (date) => dayjs(date).isBefore(dayjs(), 'D') || dayjs(date).isSame((dayjs(), 'D'));
+const isPointFuture = (date) => dayjs(date).isAfter(dayjs(), 'D') || dayjs(date).isSame((dayjs(), 'D'));
+
 export {
   formatDate,
   isEscape,
   sortPointsByTime,
-  sortPointsByPrice
+  sortPointsByPrice,
+  isPointPast,
+  isPointFuture,
 };

@@ -42,11 +42,18 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
+const FilterType = {
+  EVERYTHING: 'everything',
+  PAST: 'past',
+  FUTURE: 'future',
+};
+
 export {
   RenderPosition,
   TYPES,
   Mode,
   SortingType,
   UserAction,
-  UpdateType
+  UpdateType,
+  FilterType
 };

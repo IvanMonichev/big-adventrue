@@ -1,15 +1,15 @@
 import { SortingType } from '../constants/constants';
 
-const isChecked = (type, defaultType) => {
+const isChecked = (type, currentType) => {
   switch (type) {
-    case SortingType.DAY || defaultType:
+    case currentType:
       return 'checked';
-    case SortingType.PRICE:
-      return '';
-    case SortingType.TIME:
-      return '';
-    default:
+    case SortingType.EVENT:
       return 'disabled';
+    case SortingType.OFFERS:
+      return 'disabled';
+    default:
+      return '';
   }
 };
 
