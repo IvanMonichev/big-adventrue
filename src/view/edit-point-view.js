@@ -133,14 +133,13 @@ export default class EditPointView extends AbstractStatefulView {
     return createEditPointTemplate(this._state, this.#destinations, this.#offersByType);
   }
 
+  static parsePointToState = (point) => ({ ...point });
+
+  static parseStateToPoint = (state) => ({ ...state });
+
   setButtonClickHandler = (callback) => {
     this._callback.click = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#buttonClickHandler);
-  };
-
-  #buttonClickHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.click();
   };
 
   setFormSubmitHandler = (callback) => {
@@ -148,9 +147,12 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
   };
 
-  static parsePointToState = (point) => ({ ...point });
+  reset = (point) => this.updateElement(EditPointView.parsePointToState(point));
 
-  static parseStateToPoint = (state) => ({ ...state });
+  #buttonClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
@@ -159,7 +161,8 @@ export default class EditPointView extends AbstractStatefulView {
 
   #setInnerHandlers = () => {
     this.element.addEventListener('input', this.#offerChangeHandler);
-    this.element.addEventListener('input', this.#pointTypeChange);
+    this.element.addEventListener('input', this.#pointTypeChangeHandler);
+    this.element.addEventListener('input', this.#destinationChangeHandler);
   };
 
   #offerChangeHandler = (evt) => {
@@ -180,13 +183,24 @@ export default class EditPointView extends AbstractStatefulView {
     }
   };
 
-  #pointTypeChange = (evt) => {
+  #pointTypeChangeHandler = (evt) => {
     if (!isDemandElement(evt, '.event__type-input')) {
       return;
     }
 
     evt.preventDefault();
     this.updateElement({ type: evt.target.value });
+  };
+
+  #destinationChangeHandler = (evt) => {
+    if (!isDemandElement(evt, '.event__input--destination')) {
+      return;
+    }
+
+    evt.preventDefault();
+
+    const findDestination = this.#destinations.find((destination) => destination.name === evt.target.value);
+    this.updateElement({ destination: findDestination.id });
   };
 
   _restoreHandlers = () => {
