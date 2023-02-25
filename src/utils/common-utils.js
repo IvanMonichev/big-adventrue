@@ -5,6 +5,9 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
+const isDemandElement = (evt, selector) => evt.target.closest(selector);
+
 export {
-  getRandomInteger
+  getRandomInteger,
+  isDemandElement
 };

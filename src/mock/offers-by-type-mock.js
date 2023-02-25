@@ -8,7 +8,7 @@ const generateOffers = () => {
 
   let counter = 0;
 
-  const randomAmount = getRandomInteger(2, 10);
+  const randomAmount = getRandomInteger(2, 20);
 
   while (counter < randomAmount) {
     listRandomListOffers.push({

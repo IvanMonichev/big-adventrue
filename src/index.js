@@ -1,6 +1,5 @@
 import { render, RenderPosition } from './framework/render';
 import FilterView from './view/filter-view';
-import SortingView from './view/sorting-view';
 import PointsPresenter from './presenter/points-presenter';
 import PointsModel from './model/points-model';
 
