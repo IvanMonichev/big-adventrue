@@ -1,6 +1,7 @@
 import AbstractView from '../framework/view/abstract-view';
 import { SortingType } from '../constants/constants';
 import { isChecked } from '../utils/sorting-utils';
+import { isDemandElement } from '../utils/common-utils';
 
 const createSortingItemTemplate = (sortingType) => sortingType.map((type) =>
   `<div class="trip-sort__item  trip-sort__item--${type}">
@@ -26,7 +27,7 @@ export default class SortingView extends AbstractView {
   };
 
   #sortingTypeChangeHandler = (evt) => {
-    if (!evt.target.closest('.trip-sort__input')) {
+    if (!isDemandElement(evt,'.trip-sort__input')) {
       return;
     }
 

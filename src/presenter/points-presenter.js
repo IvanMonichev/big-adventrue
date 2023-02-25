@@ -12,12 +12,10 @@ export default class PointsPresenter {
   #sortingComponent = new SortingView();
   #pointsContainer = null;
   #pointsModel = null;
-  #listPoints = null;
   #listDestinations = null;
   #listOffers = null;
 
   #pointPresenters = new Map();
-  #sourcedPoints = [];
   #currentSortingType = SortingType.DAY;
 
   constructor(pointsContainer, pointsModel) {
@@ -26,16 +24,24 @@ export default class PointsPresenter {
   }
 
   init = () => {
-    this.#listPoints = [...this.#pointsModel.points];
     this.#listDestinations = [...this.#pointsModel.destinations];
     this.#listOffers = [...this.#pointsModel.offersByType];
-    this.#sourcedPoints = [...this.#pointsModel.points];
-    this.#sortPoints(this.#currentSortingType);
     this.#renderPoints();
   };
 
+  get points() {
+    switch (this.#currentSortingType) {
+      case SortingType.TIME:
+        return [...this.#pointsModel.points].sort(sortPointsByTime);
+      case SortingType.PRICE:
+        return [...this.#pointsModel.points].sort(sortPointsByPrice);
+    }
+
+    return this.#pointsModel.points;
+  }
+
   #pointUpdateHandler = (updatedPoint, destinations, offersByType) => {
-    this.#listPoints = updateItem(this.#listPoints, updatedPoint);
+    // Место для вызова модели
     this.#pointPresenters.get(updatedPoint.id).init(updatedPoint, destinations, offersByType);
   };
 
@@ -64,34 +70,21 @@ export default class PointsPresenter {
   };
 
   #renderPoints = () => {
-    if (this.#listPoints.length === 0) {
+    if (this.points.length === 0) {
       this.#renderEmptyList();
     } else {
       this.#renderSorting();
       this.#renderList();
-
-      for (let i = 0; i < this.#listPoints.length; i++) {
-        this.#renderPoint(this.#listPoints[i], this.#listDestinations, this.#listOffers);
-      }
-    }
-  };
-
-  #sortPoints = (sortingType) => {
-    switch (sortingType) {
-      case SortingType.TIME:
-        this.#listPoints.sort(sortPointsByTime);
-        break;
-      case SortingType.PRICE:
-        this.#listPoints.sort(sortPointsByPrice);
-        break;
-      default:
-        this.#listPoints = [...this.#sourcedPoints];
+      this.points.forEach((point) => this.#renderPoint(point, this.#listDestinations, this.#listOffers))
     }
   };
 
   #sortingTypeChangeHandler = (sortingType) => {
-    this.#sortPoints(sortingType);
+    if (this.#currentSortingType === sortingType) {
+      return;
+    }
 
+    this.#currentSortingType = sortingType;
     this.#clearPointList();
     this.#renderPoints();
   };
