@@ -22,6 +22,7 @@ export default class SortingView extends AbstractView {
     super();
     this.#currentSortingType = currentSortingType;
   }
+
   get template() {
     return createSortingTemplate(SortingType, this.#currentSortingType);
   }

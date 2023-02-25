@@ -1,6 +1,5 @@
 import { formatDate } from '../utils/point-utils';
 import AbstractView from '../framework/view/abstract-view';
-import EditPointView from './edit-point-view';
 
 const createOffersTemplate = (offers, type, offersByType) => {
   const offersByCurrentType = offersByType.find((item) => item.type === type).offers;

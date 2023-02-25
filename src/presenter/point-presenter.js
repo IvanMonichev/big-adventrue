@@ -65,7 +65,7 @@ export default class PointPresenter {
       this.#editPointComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
-  }
+  };
 
   destroy = () => {
     remove(this.#pointComponent);
@@ -95,17 +95,17 @@ export default class PointPresenter {
   };
 
   #formSubmitHandler = (point) => {
-    this.#changeData(UserAction.UPDATE_POINT, UpdateType.MINOR,  point);
+    this.#changeData(UserAction.UPDATE_POINT, UpdateType.MINOR, point);
     this.#replaceFormToPoint();
   };
 
   #deleteClickHandler = (point) => {
     this.#changeData(UserAction.DELETE_POINT, UpdateType.MINOR, point);
-  }
+  };
 
   #favoriteClickHandler = () => {
     this.#changeData(UserAction.UPDATE_POINT, UpdateType.MINOR, { ...this.#point, isFavorite: !this.#point.isFavorite });
-  }
+  };
 
   #escKeyDownHandler = (evt) => {
     if (isEscape(evt) || evt.key === 'ArrowUp') {
