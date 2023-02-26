@@ -8,7 +8,9 @@ export default class PointsModel extends Observable {
   constructor(taskApiService) {
     super();
     this.#taskApiService = taskApiService;
-    this.#taskApiService.points.then((points) => console.log(points));
+    this.#taskApiService.points.then((points) => {
+      console.log(points.map(this.#adaptToClient));
+    });
 
   }
 
@@ -43,6 +45,23 @@ export default class PointsModel extends Observable {
 
     this.#points = [...this.#points.slice(0, index), ...this.#points.slice(index + 1)];
     this._notify(updateType, update);
+  };
+
+  #adaptToClient = (point) => {
+    const adaptedPoint = {...point,
+      basePrice: point['base_price'] !== null ? new Date(point['base_price']) : point['base_price'],
+      dateFrom: point ['date_from'] !== null ? new Date(point['date_from']) : point['date_from'],
+      dateTo: point ['date_to'],
+      isFavorite: point['is_favorite'],
+    };
+
+    // Ненужные ключи мы удаляем
+    delete adaptedPoint['base_price'];
+    delete adaptedPoint['date_from'];
+    delete adaptedPoint['date_to'];
+    delete adaptedPoint['is_favorite'];
+
+    return adaptedPoint;
   };
 }
 
