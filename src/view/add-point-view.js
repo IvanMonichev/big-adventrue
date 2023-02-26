@@ -1,126 +1,257 @@
 import { formatDate } from '../utils/point-utils';
 import AbstractView from '../framework/view/abstract-view';
+import dayjs from 'dayjs';
+import { isDemandElement } from '../utils/common-utils';
+import 'flatpickr/dist/flatpickr.min.css';
+import flatpickr from 'flatpickr';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 
-const createPicturesTemplate = (pictures) => pictures.map(({ src, description }) => `<img class="event__photo" src="${src}" alt="${description}"></img>`).join('');
+const EVENT_BLANK = {
+  basePrice: 0,
+  dateFrom: dayjs().toDate(),
+  dateTo: dayjs().toDate(),
+  destination: 1,
+  id: null,
+  type: 'taxi',
+  offers: [],
+};
 
-const createOffersTemplate = (currentType, offersByType) => {
-  const offersByCurrentType = offersByType.find((element) => element.type === currentType).offers;
+const createPicturesTemplate = (pictures) => pictures.map(({ src, description }) => `<img class="event__photo" src="${src}" alt="${description}">`).join('');
 
-  return offersByCurrentType.map(({ title, price }) =>
-    `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${title}-1" type="checkbox" name="event-offer-${title}">
-      <label class="event__offer-label" for="event-offer-${title}-1">
-        <span class="event__offer-title">${title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${price}</span>
-      </label>
-    </div>`
-  ).join('');
+const createOffersTemplate = (type, offers, offersByType) => {
+  const offersByCurrentType = offersByType.find((element) => element.type === type).offers;
+
+  return offersByCurrentType.map(({ id, title, price }) => {
+    const isChecked = offers.includes(id) ? 'checked' : '';
+
+    return (
+      `<div class="event__offer-selector">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${title}-1" type="checkbox" name="event-offer-${title}" ${isChecked} data-offer-id="${id}">
+        <label class="event__offer-label" for="event-offer-${title}-1">
+          <span class="event__offer-title">${title}</span>
+          &plus;&euro;&nbsp;
+          <span class="event__offer-price">${price}</span>
+        </label>
+      </div>`
+    );
+  }).join('');
 };
 
 const createDestinationListTemplate = (destinations) => destinations.map((element) => `<option value="${element.name}"></option>`).join('');
 
-const createEventTypeListTemplate = (offersByType) => {
+const createEventTypeListTemplate = (offersByType, type) => {
   const eventTypes = offersByType.map((element) => element.type);
 
-  return eventTypes.map((type) =>
+  return eventTypes.map((eventType) =>
     `<div class="event__type-item">
-      <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type}</label>
+      <input id="event-type-${eventType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}" ${eventType === type ? 'checked' : ''}>
+      <label class="event__type-label  event__type-label--${eventType}" for="event-type-${eventType}-1">${eventType}</label>
     </div>`
   ).join('');
 };
 
-const createAddPointTemplate = (destinations, offersByType) => {
-  const currentType = offersByType[0].type;
-  const currentDestination = destinations[0].id;
-  const destinationName = destinations.find((element) => element.id === currentDestination).name;
-  const destinationDescription = destinations.find((element) => element.id === currentDestination).description;
+const createAddPointTemplate = (point, destinations, offersByType) => {
+  const { basePrice, dateFrom, dateTo, destination, type, offers } = point;
+  const currentDestination = destinations.find((element) => element.id === destination);
 
   return (
     `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
-       <header class="event__header">
-         <div class="event__type-wrapper">
-           <label class="event__type  event__type-btn" for="event-type-toggle-1">
-             <span class="visually-hidden">Choose event type</span>
-             <img class="event__type-icon" width="17" height="17" src="img/icons/${currentType}.png" alt="Event type icon">
-           </label>
-           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+        <header class="event__header">
+          <div class="event__type-wrapper">
+            <label class="event__type  event__type-btn" for="event-type-toggle-1">
+              <span class="visually-hidden">Choose event type</span>
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+            </label>
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
-           <div class="event__type-list">
-             <fieldset class="event__type-group">
-               <legend class="visually-hidden">Event type</legend>
-                ${createEventTypeListTemplate(offersByType)}
-             </fieldset>
-           </div>
-         </div>
+            <div class="event__type-list">
+              <fieldset class="event__type-group">
+                <legend class="visually-hidden">Event type</legend>
+                ${createEventTypeListTemplate(offersByType, type)}
+              </fieldset>
+            </div>
+          </div>
 
-         <div class="event__field-group  event__field-group--destination">
-           <label class="event__label  event__type-output" for="event-destination-1">
-             Flight
-           </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destinationName}" list="destination-list-1">
+          <div class="event__field-group  event__field-group--destination">
+            <label class="event__label  event__type-output" for="event-destination-1">
+              ${type}
+            </label>
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentDestination.name}" list="destination-list-1">
             <datalist id="destination-list-1">
               ${createDestinationListTemplate(destinations)}
-            </datalist> 
-         </div>
+            </datalist>
+          </div>
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(undefined, 'DD/MM/YY HH:mm')}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDate(dateFrom, 'DD/MM/YY HH:mm')}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(undefined, 'DD/MM/YY HH:mm')}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDate(dateTo, 'DD/MM/YY HH:mm')}">
           </div>
 
-         <div class="event__field-group  event__field-group--price">
-           <label class="event__label" for="event-price-1">
-             <span class="visually-hidden">Price</span>
-             &euro;
-           </label>
-           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
-         </div>
+          <div class="event__field-group  event__field-group--price">
+            <label class="event__label" for="event-price-1">
+              <span class="visually-hidden">Price</span>
+              &euro;
+            </label>
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+          </div>
 
-         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-         <button class="event__reset-btn" type="reset">Cancel</button>
-       </header>
-       <section class="event__details">
-         <section class="event__section  event__section--offers">
-           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__reset-btn" type="reset">Cancel</button>
+          <button class="event__rollup-btn" type="button">
+            <span class="visually-hidden">Open event</span>
+          </button>
+        </header>
+        <section class="event__details">
+          <section class="event__section  event__section--offers">
+            <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-           <div class="event__available-offers">
-            ${createOffersTemplate(currentType, offersByType)}
-           </div>
-         </section>
+            <div class="event__available-offers">
+              ${createOffersTemplate(type, offers, offersByType)}
+            </div>
+          </section>
 
-         <section class="event__section  event__section--destination">
-           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${destinationDescription}</p>
+          <section class="event__section  event__section--destination">
+            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+            <p class="event__destination-description">${currentDestination.description}</p>
 
-           <div class="event__photos-container">
-             <div class="event__photos-tape">
-                ${createPicturesTemplate(destinations[0].pictures)}
-             </div>
-           </div>
-         </section>
-       </section>
+            <div class="event__photos-container">
+              <div class="event__photos-tape">
+                ${createPicturesTemplate(currentDestination.pictures)}
+              </div>
+            </div>
+          </section>
+        </section>
       </form>
-     </li>`
+    </li>`
   );
 };
 
-export default class AddPointView extends AbstractView{
+export default class AddPointView extends AbstractStatefulView {
+  #dateFromPicker = null;
+  #dateToPicker = null;
   #destinations = null;
   #offersByType = null;
 
   constructor(destinations, offersByType) {
     super();
+    this._state = EVENT_BLANK;
     this.#destinations = destinations;
     this.#offersByType = offersByType;
+
+    this.#setInnerHandlers();
+    this.#setDatePickers();
   }
 
   get template() {
-    return createAddPointTemplate(this.#destinations, this.#offersByType);
+    return createAddPointTemplate(this._state, this.#destinations, this.#offersByType);
   }
+
+  static parseStateToPoint = (state) => ({ ...state });
+
+  setButtonClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#buttonClickHandler);
+  };
+
+  setFormSubmitHandler = (callback) => {
+    this._callback.submitForm = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+  };
+
+  removeElement() {
+    super.removeElement();
+
+    if (this.#dateFromPicker || this.#dateToPicker) {
+      this.#dateFromPicker.destroy();
+      this.#dateToPicker.destroy();
+      this.#dateFromPicker = null;
+      this.#dateToPicker = null;
+    }
+  }
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.submitForm);
+    this.setButtonClickHandler(this._callback.click);
+    this.#setDatePickers();
+  };
+
+  #buttonClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.submitForm(AddPointView.parseStateToPoint(this._state), this.#destinations, this.#offersByType);
+  };
+
+  #setInnerHandlers = () => {
+    this.element.addEventListener('change', this.#offerChangeHandler);
+    this.element.addEventListener('change', this.#pointTypeChangeHandler);
+    this.element.addEventListener('change', this.#destinationChangeHandler);
+  };
+
+  #offerChangeHandler = (evt) => {
+
+    // Используем делегирование событий
+    if (!isDemandElement(evt, '.event__offer-checkbox')) {
+      return;
+    }
+
+    evt.preventDefault();
+    const stateOffers = [...this._state.offers];
+    const numberId = Number(evt.target.dataset.offerId);
+
+    if (evt.target.checked) {
+      this.updateElement({ offers: [...stateOffers, numberId] });
+    } else {
+      this.updateElement({ offers: [...stateOffers.filter((item) => item !== numberId)] });
+    }
+  };
+
+  #pointTypeChangeHandler = (evt) => {
+    if (!isDemandElement(evt, '.event__type-input')) {
+      return;
+    }
+
+    evt.preventDefault();
+    this.updateElement({ type: evt.target.value });
+  };
+
+  #destinationChangeHandler = (evt) => {
+    if (!isDemandElement(evt, '.event__input--destination')) {
+      return;
+    }
+
+    evt.preventDefault();
+
+    const findDestination = this.#destinations.find((destination) => destination.name === evt.target.value);
+
+    if (findDestination) {
+      this.updateElement({ destination: findDestination.id });
+    }
+  };
+
+  #setDatePickers = () => {
+    this.#dateFromPicker = flatpickr(this.element.querySelector('input[name="event-start-time"]'), {
+      enableTime: true,
+      dateFormat: 'd/m/y H:i',
+      defaultDate: this._state.dateFrom,
+      onChange: this.#dateFromChangeHandler
+    });
+    this.#dateToPicker = flatpickr(this.element.querySelector('input[name="event-end-time"]'), {
+      enableTime: true,
+      dateFormat: 'd/m/y H:i',
+      defaultDate: this._state.dateTo,
+      onChange: this.#dateToChangeHandler,
+    });
+  };
+
+  #dateFromChangeHandler = ([ userDate ]) => this.updateElement({ dateFrom: userDate });
+  #dateToChangeHandler = ([ userDate ]) => this.updateElement({ dateTo: userDate });
 }

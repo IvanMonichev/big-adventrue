@@ -7,7 +7,8 @@ import { nanoid } from 'nanoid';
 
 export default class AddPointPresenter {
   #destinations = null;
-  #offersBtType = null;
+  #offersByType = null;
+  #destroyCallback = null;
   #container = null;
   #changeData = null;
   #addPointComponent = null;
@@ -17,17 +18,22 @@ export default class AddPointPresenter {
     this.#changeData = changeData;
   }
 
-  init = (destinations, offersByType) => {
+  init = (destinations, offersByType, callback) => {
     this.#destinations = destinations;
-    this.#offersBtType = offersByType;
+    this.#offersByType = offersByType;
+    this.#destroyCallback = callback;
 
     if (this.#addPointComponent !== null) {
       return;
     }
+
     // Создаём экземпляры компонентов
     this.#addPointComponent = new AddPointView(destinations, offersByType);
+    this.#addPointComponent.setFormSubmitHandler(this.#formSubmitHandler);
+    this.#addPointComponent.setButtonClickHandler(this.#cancelClickHandler);
 
     render(this.#addPointComponent, this.#container, RenderPosition.AFTEREND);
+    document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
   destroy = () => {
@@ -35,12 +41,15 @@ export default class AddPointPresenter {
       return;
     }
 
-    // Нужно будет произвести очистку колбэков.
+    this.#destroyCallback?.();
+
     remove(this.#addPointComponent);
+    this.#addPointComponent = null;
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
-  #formSubmitHandler = (point) => {
-    this.#changeData(UserAction.ADD_POINT, UpdateType.MINOR, { id: nanoid(), ...point });
+  #formSubmitHandler = (update, destinations, offersByType) => {
+    this.#changeData(UserAction.ADD_POINT, UpdateType.MINOR, { id: nanoid(), ...update }, destinations, offersByType);
     this.destroy();
   };
 

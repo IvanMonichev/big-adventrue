@@ -4,12 +4,13 @@ import PointPresenter from './point-presenter';
 import { remove, render } from '../framework/render';
 import { sortPointsByPrice, sortPointsByTime } from '../utils/point-utils';
 import SortingView from '../view/sorting-view';
-import { SortingType, UpdateType, UserAction } from '../constants/constants';
+import { FilterType, SortingType, UpdateType, UserAction } from '../constants/constants';
 import { filter } from '../utils/filter-utils';
+import AddPointPresenter from './add-point-presenter';
 
 export default class CommonPresenter {
+  #listEmptyComponent = null;
   #listViewComponent = new ListView();
-  #listEmptyComponent = new ListEmptyView();
   #sortingComponent = null;
   #pointsContainer = null;
   #pointsModel = null;
@@ -21,6 +22,9 @@ export default class CommonPresenter {
 
   #pointPresenters = new Map();
   #currentSortingType = SortingType.DAY;
+  #filterType = FilterType.EVERYTHING;
+
+  #addPointPresenter = null;
 
   constructor(pointsContainer, pointsModel, destinationsModel, offerByTypeModel, filterModel) {
     this.#pointsContainer = pointsContainer;
@@ -28,6 +32,8 @@ export default class CommonPresenter {
     this.#destinationsModel = destinationsModel;
     this.#offerByTypeModel = offerByTypeModel;
     this.#filterModel = filterModel;
+
+    this.#addPointPresenter = new AddPointPresenter(this.#listViewComponent.element, this.#viewActionHandler);
 
     this.#pointsModel.addObserver(this.#modelEventHandler);
     this.#filterModel.addObserver(this.#modelEventHandler);
@@ -54,6 +60,11 @@ export default class CommonPresenter {
     return filterPoints;
   }
 
+  createPoint = (callback) => {
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#addPointPresenter.init(this.#listDestinations, this.#listOffers, callback);
+  };
+
   #viewActionHandler = (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
@@ -71,7 +82,7 @@ export default class CommonPresenter {
   #modelEventHandler = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#pointPresenters.get(data.id).init(data);
+        this.#pointPresenters.get(data.id).init(data, this.#listDestinations, this.#listOffers);
         break;
       case UpdateType.MINOR:
         this.#clearPointList();
@@ -85,6 +96,7 @@ export default class CommonPresenter {
   };
 
   #modeChangeHandler = () => {
+    this.#addPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.resetView());
   };
 
@@ -106,6 +118,7 @@ export default class CommonPresenter {
   };
 
   #renderEmptyList = () => {
+    this.#listEmptyComponent = new ListEmptyView(this.#filterType);
     render(this.#listEmptyComponent, this.#pointsContainer);
   };
 
@@ -131,12 +144,15 @@ export default class CommonPresenter {
 
   // Метод для очистки списка элементов, установка метода сортировки по умолчанию
   #clearPointList ({resetSortingType = false} = {}) {
+    this.#addPointPresenter.destroy();
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
 
     remove(this.#sortingComponent);
-    remove(this.#listViewComponent);
-    remove(this.#listEmptyComponent);
+
+    if (this.#listEmptyComponent) {
+      remove(this.#listEmptyComponent);
+    }
 
     if (resetSortingType) {
       this.#currentSortingType = SortingType.DAY;
