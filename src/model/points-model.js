@@ -1,18 +1,27 @@
 import Observable from '../framework/observable';
 import { generatePoint } from '../mock/point-mock';
+import { UpdateType } from '../constants/constants';
 
 
 export default class PointsModel extends Observable {
-  #taskApiService = null;
+  #commonApiService = null;
   #points = Array.from({length: 10}, generatePoint);
-  constructor(taskApiService) {
-    super();
-    this.#taskApiService = taskApiService;
-    this.#taskApiService.points.then((points) => {
-      console.log(points.map(this.#adaptToClient));
-    });
 
+  constructor(commonApiService) {
+    super();
+    this.#commonApiService = commonApiService;
   }
+
+  init = async () => {
+    try {
+      const points = await this.#commonApiService.points;
+      this.#points = points.map(this.#adaptToClient);
+    } catch (err) {
+      this.#points = [];
+    }
+
+    this._notify(UpdateType.INIT);
+  };
 
   get points() {
     return this.#points;
@@ -49,9 +58,9 @@ export default class PointsModel extends Observable {
 
   #adaptToClient = (point) => {
     const adaptedPoint = {...point,
-      basePrice: point['base_price'] !== null ? new Date(point['base_price']) : point['base_price'],
+      basePrice: point['base_price'],
       dateFrom: point ['date_from'] !== null ? new Date(point['date_from']) : point['date_from'],
-      dateTo: point ['date_to'],
+      dateTo: point ['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
       isFavorite: point['is_favorite'],
     };
 

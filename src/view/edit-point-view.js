@@ -41,10 +41,8 @@ const createEventTypeListTemplate = (offersByType, type) => {
 };
 
 const createEditPointTemplate = (point, destinations, offersByType) => {
-
   const { dateFrom, dateTo, basePrice, type, destination, offers } = point;
-  const destinationName = destinations.find((item) => item.id === destination).name;
-  const destinationDescription = destinations.find((item) => item.id === destination).description;
+  const currentDestination = destinations.find((element) => element.name === destination.name);
 
   return (
     `<li class="trip-events__item">
@@ -69,7 +67,7 @@ const createEditPointTemplate = (point, destinations, offersByType) => {
            <label class="event__label  event__type-output" for="event-destination-1">
              ${type}
            </label>
-           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="${destinationName}" value="${destinationName}" list="destination-list-1">
+           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="${currentDestination.name}" value="${currentDestination.name}" list="destination-list-1">
            <datalist id="destination-list-1">
              ${createDestinationListTemplate(destinations)}
            </datalist>
@@ -108,7 +106,7 @@ const createEditPointTemplate = (point, destinations, offersByType) => {
   
          <section class="event__section  event__section--destination">
            <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-           <p class="event__destination-description">${destinationDescription}</p>
+           <p class="event__destination-description">${currentDestination.description}</p>
          </section>
        </section>
        </form>
@@ -232,7 +230,7 @@ export default class EditPointView extends AbstractStatefulView {
     const findDestination = this.#destinations.find((destination) => destination.name === evt.target.value);
 
     if (findDestination) {
-      this.updateElement({ destination: findDestination.id });
+      this.updateElement({ destination: findDestination });
     }
   };
 

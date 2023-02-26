@@ -1,5 +1,4 @@
 import { formatDate } from '../utils/point-utils';
-import AbstractView from '../framework/view/abstract-view';
 import dayjs from 'dayjs';
 import { isDemandElement } from '../utils/common-utils';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -10,7 +9,9 @@ const EVENT_BLANK = {
   basePrice: 0,
   dateFrom: dayjs().toDate(),
   dateTo: dayjs().toDate(),
-  destination: 1,
+  destination: {
+    name: 'Geneva',
+  },
   id: null,
   type: 'taxi',
   offers: [],
@@ -52,7 +53,7 @@ const createEventTypeListTemplate = (offersByType, type) => {
 
 const createAddPointTemplate = (point, destinations, offersByType) => {
   const { basePrice, dateFrom, dateTo, destination, type, offers } = point;
-  const currentDestination = destinations.find((element) => element.id === destination);
+  const currentDestination = destinations.find((element) => element.name === destination.name);
 
   return (
     `<li class="trip-events__item">
@@ -236,7 +237,7 @@ export default class AddPointView extends AbstractStatefulView {
     const findDestination = this.#destinations.find((destination) => destination.name === evt.target.value);
 
     if (findDestination) {
-      this.updateElement({ destination: findDestination.id });
+      this.updateElement({ destination: findDestination });
     }
   };
 

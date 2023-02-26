@@ -17,8 +17,6 @@ const createOffersTemplate = (offers, type, offersByType) => {
 const createPointItemTemplate = (points, destinations, offersByType) => {
   const { dateFrom, dateTo, basePrice, type, isFavorite, destination, offers } = points;
 
-  const destinationName = destinations.find((item) => item.id === destination).name;
-
   const isFavoriteItem = isFavorite
     ? 'event__favorite-btn--active'
     : '';
@@ -30,7 +28,7 @@ const createPointItemTemplate = (points, destinations, offersByType) => {
             <div class="event__type">
               <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
             </div>
-            <h3 class="event__title">${destinationName}</h3>
+            <h3 class="event__title">${destination.name}</h3>
             <div class="event__schedule">
               <p class="event__time">
                 <time class="event__start-time" datetime="${formatDate(dateFrom, 'YYYY-MM-DDTHH:mm')}">${formatDate(dateFrom, 'H:mm')}</time>

@@ -1,23 +1,23 @@
 import ListView from '../view/list-view';
 import ListEmptyView from '../view/list-empty-view';
 import PointPresenter from './point-presenter';
-import { remove, render } from '../framework/render';
+import { remove, render, RenderPosition } from '../framework/render';
 import { sortPointsByPrice, sortPointsByTime } from '../utils/point-utils';
 import SortingView from '../view/sorting-view';
 import { FilterType, SortingType, UpdateType, UserAction } from '../constants/constants';
 import { filter } from '../utils/filter-utils';
 import AddPointPresenter from './add-point-presenter';
+import LoadingMessageView from '../view/loading-message-view';
 
 export default class CommonPresenter {
   #listEmptyComponent = null;
   #listViewComponent = new ListView();
+  #loadingMessageComponent = new LoadingMessageView();
   #sortingComponent = null;
   #pointsContainer = null;
   #pointsModel = null;
   #destinationsModel = null;
   #offerByTypeModel = null;
-  #listDestinations = null;
-  #listOffers = null;
   #filterModel = null;
 
   #pointPresenters = new Map();
@@ -25,6 +25,7 @@ export default class CommonPresenter {
   #filterType = FilterType.EVERYTHING;
 
   #addPointPresenter = null;
+  #isLoading = true;
 
   constructor(pointsContainer, pointsModel, destinationsModel, offerByTypeModel, filterModel) {
     this.#pointsContainer = pointsContainer;
@@ -37,11 +38,10 @@ export default class CommonPresenter {
 
     this.#pointsModel.addObserver(this.#modelEventHandler);
     this.#filterModel.addObserver(this.#modelEventHandler);
+
   }
 
   init = () => {
-    this.#listDestinations = [...this.#destinationsModel.destinations];
-    this.#listOffers = [...this.#offerByTypeModel.offersByType];
     this.#renderPoints();
   };
 
@@ -62,7 +62,7 @@ export default class CommonPresenter {
 
   createPoint = (callback) => {
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#addPointPresenter.init(this.#listDestinations, this.#listOffers, callback);
+    this.#addPointPresenter.init(this.#destinationsModel.destinations, this.#offerByTypeModel.offersByType, callback);
   };
 
   #viewActionHandler = (actionType, updateType, update) => {
@@ -82,7 +82,7 @@ export default class CommonPresenter {
   #modelEventHandler = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#pointPresenters.get(data.id).init(data, this.#listDestinations, this.#listOffers);
+        this.#pointPresenters.get(data.id).init(data, this.#destinationsModel.destinations, this.#offerByTypeModel.offersByType);
         break;
       case UpdateType.MINOR:
         this.#clearPointList();
@@ -90,6 +90,11 @@ export default class CommonPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearPointList({resetSortingType: true});
+        this.#renderPoints();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingMessageComponent);
         this.#renderPoints();
         break;
     }
@@ -117,18 +122,27 @@ export default class CommonPresenter {
     render(this.#listViewComponent, this.#pointsContainer);
   };
 
+  #renderLoadingMessage = () => {
+    render(this.#loadingMessageComponent, this.#pointsContainer, RenderPosition.AFTERBEGIN);
+  };
+
   #renderEmptyList = () => {
     this.#listEmptyComponent = new ListEmptyView(this.#filterType);
     render(this.#listEmptyComponent, this.#pointsContainer);
   };
 
   #renderPoints = () => {
+    if (this.#isLoading) {
+      this.#renderLoadingMessage();
+      return;
+    }
+
     if (this.points.length === 0) {
       this.#renderEmptyList();
     } else {
       this.#renderSorting();
       this.#renderList();
-      this.points.forEach((point) => this.#renderPoint(point, this.#listDestinations, this.#listOffers));
+      this.points.forEach((point) => this.#renderPoint(point, this.#destinationsModel.destinations, this.#offerByTypeModel.offersByType));
     }
   };
 
@@ -149,6 +163,7 @@ export default class CommonPresenter {
     this.#pointPresenters.clear();
 
     remove(this.#sortingComponent);
+    remove(this.#loadingMessageComponent);
 
     if (this.#listEmptyComponent) {
       remove(this.#listEmptyComponent);
