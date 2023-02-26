@@ -192,7 +192,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.addEventListener('change', this.#offerChangeHandler);
     this.element.addEventListener('change', this.#pointTypeChangeHandler);
     this.element.addEventListener('change', this.#destinationChangeHandler);
-    this.element.addEventListener('change', this.#priceChangeHandler);
+    this.element.addEventListener('input', this.#priceChangeHandler);
   };
 
   #offerChangeHandler = (evt) => {
