@@ -88,7 +88,7 @@ const createEditPointTemplate = (point, destinations, offersByType) => {
              <span class="visually-hidden">Price</span>
              &euro;
            </label>
-           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+           <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${basePrice}" required min="1">
          </div>
   
          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -157,7 +157,9 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
   };
 
-  reset = (point) => this.updateElement(EditPointView.parsePointToState(point));
+  reset = (point) => {
+    this.updateElement(EditPointView.parsePointToState(point));
+  };
 
   removeElement() {
     super.removeElement();
@@ -190,6 +192,7 @@ export default class EditPointView extends AbstractStatefulView {
     this.element.addEventListener('change', this.#offerChangeHandler);
     this.element.addEventListener('change', this.#pointTypeChangeHandler);
     this.element.addEventListener('change', this.#destinationChangeHandler);
+    this.element.addEventListener('change', this.#priceChangeHandler);
   };
 
   #offerChangeHandler = (evt) => {
@@ -231,6 +234,16 @@ export default class EditPointView extends AbstractStatefulView {
     if (findDestination) {
       this.updateElement({ destination: findDestination.id });
     }
+  };
+
+  #priceChangeHandler = (evt) => {
+    if (!isDemandElement(evt, '.event__input--price')) {
+      return;
+    }
+
+    evt.preventDefault();
+
+    this.updateElement({basePrice: evt.target.value});
   };
 
   #deleteClickHandler = (evt) => {

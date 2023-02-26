@@ -155,6 +155,7 @@ export default class AddPointView extends AbstractStatefulView {
   setButtonClickHandler = (callback) => {
     this._callback.click = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#buttonClickHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#buttonClickHandler);
   };
 
   setFormSubmitHandler = (callback) => {
@@ -194,6 +195,7 @@ export default class AddPointView extends AbstractStatefulView {
     this.element.addEventListener('change', this.#offerChangeHandler);
     this.element.addEventListener('change', this.#pointTypeChangeHandler);
     this.element.addEventListener('change', this.#destinationChangeHandler);
+    this.element.addEventListener('change', this.#priceChangeHandler);
   };
 
   #offerChangeHandler = (evt) => {
@@ -235,6 +237,16 @@ export default class AddPointView extends AbstractStatefulView {
     if (findDestination) {
       this.updateElement({ destination: findDestination.id });
     }
+  };
+
+  #priceChangeHandler = (evt) => {
+    if (!isDemandElement(evt, '.event__input--price')) {
+      return;
+    }
+
+    evt.preventDefault();
+
+    this.updateElement({basePrice: evt.target.value});
   };
 
   #setDatePickers = () => {

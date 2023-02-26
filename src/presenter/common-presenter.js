@@ -101,7 +101,7 @@ export default class CommonPresenter {
   };
 
   #renderPoint = (point, destinations, offersBtType) => {
-    const pointPresenter = new PointPresenter(this.#pointsContainer, this.#viewActionHandler, this.#modeChangeHandler);
+    const pointPresenter = new PointPresenter(this.#listViewComponent.element, this.#viewActionHandler, this.#modeChangeHandler);
     pointPresenter.init(point, destinations, offersBtType);
 
     this.#pointPresenters.set(point.id, pointPresenter);

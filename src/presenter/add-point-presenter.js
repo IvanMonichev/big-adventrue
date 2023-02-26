@@ -32,7 +32,7 @@ export default class AddPointPresenter {
     this.#addPointComponent.setFormSubmitHandler(this.#formSubmitHandler);
     this.#addPointComponent.setButtonClickHandler(this.#cancelClickHandler);
 
-    render(this.#addPointComponent, this.#container, RenderPosition.AFTEREND);
+    render(this.#addPointComponent, this.#container, RenderPosition.AFTERBEGIN);
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
