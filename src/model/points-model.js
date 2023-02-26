@@ -1,11 +1,10 @@
 import Observable from '../framework/observable';
-import { generatePoint } from '../mock/point-mock';
 import { UpdateType } from '../constants/constants';
 
 
 export default class PointsModel extends Observable {
   #commonApiService = null;
-  #points = Array.from({length: 10}, generatePoint);
+  #points = null;
 
   constructor(commonApiService) {
     super();
