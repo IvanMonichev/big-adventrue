@@ -22,17 +22,17 @@ export default class PointPresenter {
     this.#changeMode = changeMode;
   }
 
-  init = (point, destinations, offersBtType) => {
+  init = (point, destinations, offersByType) => {
     this.#point = point;
     this.#destinations = destinations;
-    this.#offersBtType = offersBtType;
+    this.#offersBtType = offersByType;
 
     const prevPontComponent = this.#pointComponent;
     const prevEditPointComponent = this.#editPointComponent;
 
     // Создаём экземпляры компонентов
-    this.#pointComponent = new PointItemView(point, destinations, offersBtType);
-    this.#editPointComponent = new EditPointView(point, destinations, offersBtType);
+    this.#pointComponent = new PointItemView(point, destinations, offersByType);
+    this.#editPointComponent = new EditPointView(point, destinations, offersByType);
 
     // Вешаем слушатели через колбэк
     this.#pointComponent.setButtonClickHandler(this.#editButtonClickHandler);

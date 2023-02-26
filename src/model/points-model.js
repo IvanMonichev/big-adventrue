@@ -5,20 +5,15 @@ import Observable from '../framework/observable';
 
 
 export default class PointsModel extends Observable {
-  #points = Array.from({length: 10}, generatePoint);
-  #destinations = Array.from({length: 20}, (_, index) => generateDestionation(index));
-  #offersByType = generateOffersByType();
+  #points = null;
+
+  constructor(points) {
+    super();
+    this.#points = points;
+  }
 
   get points() {
     return this.#points;
-  }
-
-  get destinations() {
-    return this.#destinations;
-  }
-
-  get offersByType() {
-    return this.#offersByType;
   }
 
   updatePoint = (updateType, update) => {

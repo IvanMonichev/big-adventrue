@@ -7,12 +7,14 @@ import SortingView from '../view/sorting-view';
 import { SortingType, UpdateType, UserAction } from '../constants/constants';
 import { filter } from '../utils/filter-utils';
 
-export default class PointsPresenter {
+export default class CommonPresenter {
   #listViewComponent = new ListView();
   #listEmptyComponent = new ListEmptyView();
   #sortingComponent = null;
   #pointsContainer = null;
   #pointsModel = null;
+  #destinationsModel = null;
+  #offerByTypeModel = null;
   #listDestinations = null;
   #listOffers = null;
   #filterModel = null;
@@ -20,9 +22,11 @@ export default class PointsPresenter {
   #pointPresenters = new Map();
   #currentSortingType = SortingType.DAY;
 
-  constructor(pointsContainer, pointsModel, filterModel) {
+  constructor(pointsContainer, pointsModel, destinationsModel, offerByTypeModel, filterModel) {
     this.#pointsContainer = pointsContainer;
     this.#pointsModel = pointsModel;
+    this.#destinationsModel = destinationsModel;
+    this.#offerByTypeModel = offerByTypeModel;
     this.#filterModel = filterModel;
 
     this.#pointsModel.addObserver(this.#modelEventHandler);
@@ -30,8 +34,8 @@ export default class PointsPresenter {
   }
 
   init = () => {
-    this.#listDestinations = [...this.#pointsModel.destinations];
-    this.#listOffers = [...this.#pointsModel.offersByType];
+    this.#listDestinations = [...this.#destinationsModel.destinations];
+    this.#listOffers = [...this.#offerByTypeModel.offersByType];
     this.#renderPoints();
   };
 
