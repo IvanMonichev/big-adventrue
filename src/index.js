@@ -9,6 +9,10 @@ import { generateOffersByType } from './mock/offers-by-type-mock';
 import { generatePoint } from './mock/point-mock';
 import AddPointBtnView from './view/add-point-btn-view';
 import { render } from './framework/render';
+import PointsApiService from './services/points-api-service';
+
+const AUTHORIZATION = 'Basic WNSaG37gvlPQ';
+const END_POINT = 'https://17.ecmascript.pages.academy/big-trip';
 
 const filterContainer = document.querySelector('.trip-controls__filters');
 const tripEventsElement = document.querySelector('.trip-events');
@@ -16,11 +20,10 @@ const tripEventsElement = document.querySelector('.trip-events');
 const addPointButtonComponent = new AddPointBtnView();
 const addPointButtonContainer = document.querySelector('.trip-main');
 
-const mockPoints = Array.from({length: 10}, generatePoint);
 const mockDestinations = Array.from({length: 20}, (_, index) => generateDestionation(index));
 const mockOffersByType = generateOffersByType();
 
-const pointsModel = new PointsModel(mockPoints);
+const pointsModel = new PointsModel(new PointsApiService(END_POINT, AUTHORIZATION));
 const destinationsModel = new DestinationModel(mockDestinations);
 const offersByTypeModel = new OffersByTypeModel(mockOffersByType);
 const filterModel = new FilterModel();

@@ -232,6 +232,7 @@ export default class AddPointView extends AbstractStatefulView {
 
     evt.preventDefault();
 
+
     const findDestination = this.#destinations.find((destination) => destination.name === evt.target.value);
 
     if (findDestination) {

@@ -1,15 +1,15 @@
-import { generatePoint } from '../mock/point-mock';
-import { generateOffersByType } from '../mock/offers-by-type-mock';
-import { generateDestionation } from '../mock/destination-mock';
 import Observable from '../framework/observable';
+import { generatePoint } from '../mock/point-mock';
 
 
 export default class PointsModel extends Observable {
-  #points = null;
-
-  constructor(points) {
+  #taskApiService = null;
+  #points = Array.from({length: 10}, generatePoint);
+  constructor(taskApiService) {
     super();
-    this.#points = points;
+    this.#taskApiService = taskApiService;
+    this.#taskApiService.points.then((points) => console.log(points));
+
   }
 
   get points() {
