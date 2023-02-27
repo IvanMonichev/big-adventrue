@@ -26,3 +26,5 @@
 3. Сортировка точек маршрутов.
 4. Фильтрация точек маршрутов.
 
+---
+Ссылка на проект: [ivanmonichev.github.io/big-trip/](https://ivanmonichev.github.io/big-trip/)
