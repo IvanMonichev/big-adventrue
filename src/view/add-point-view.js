@@ -11,8 +11,8 @@ const EVENT_BLANK = {
   dateTo: dayjs().toDate(),
   destination: {
     name: 'Geneva',
+    description: 'Geneva, in a middle of Europe, middle-eastern paradise, with an embankment of a mighty river as a centre of attraction, famous for its crowded street markets with the best street food in Asia.'
   },
-  id: null,
   type: 'taxi',
   offers: [],
 };
@@ -137,9 +137,9 @@ export default class AddPointView extends AbstractStatefulView {
   #destinations = null;
   #offersByType = null;
 
-  constructor(destinations, offersByType) {
+  constructor(point, destinations, offersByType) {
     super();
-    this._state = EVENT_BLANK;
+    this._state = point;
     this.#destinations = destinations;
     this.#offersByType = offersByType;
 

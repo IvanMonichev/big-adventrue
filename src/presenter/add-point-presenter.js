@@ -1,6 +1,6 @@
 import { remove, render, RenderPosition, replace } from '../framework/render';
 import { isEscape } from '../utils/point-utils';
-import { Mode, UpdateType, UserAction } from '../constants/constants';
+import { UpdateType, UserAction } from '../constants/constants';
 import AddPointView from '../view/add-point-view';
 import { nanoid } from 'nanoid';
 
@@ -12,13 +12,15 @@ export default class AddPointPresenter {
   #container = null;
   #changeData = null;
   #addPointComponent = null;
+  #point = null;
 
   constructor(container, changeData) {
     this.#container = container;
     this.#changeData = changeData;
   }
 
-  init = (destinations, offersByType, callback) => {
+  init = (point, destinations, offersByType, callback) => {
+    this.#point = point;
     this.#destinations = destinations;
     this.#offersByType = offersByType;
     this.#destroyCallback = callback;
@@ -28,7 +30,7 @@ export default class AddPointPresenter {
     }
 
     // Создаём экземпляры компонентов
-    this.#addPointComponent = new AddPointView(destinations, offersByType);
+    this.#addPointComponent = new AddPointView(point, destinations, offersByType);
     this.#addPointComponent.setFormSubmitHandler(this.#formSubmitHandler);
     this.#addPointComponent.setButtonClickHandler(this.#cancelClickHandler);
 

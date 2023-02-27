@@ -62,7 +62,7 @@ export default class CommonPresenter {
 
   createPoint = (callback) => {
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#addPointPresenter.init(this.#destinationsModel.destinations, this.#offerByTypeModel.offersByType, callback);
+    this.#addPointPresenter.init(this.#pointsModel.points[0], this.#destinationsModel.destinations, this.#offerByTypeModel.offersByType, callback);
   };
 
   #viewActionHandler = (actionType, updateType, update) => {
