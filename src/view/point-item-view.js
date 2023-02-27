@@ -1,5 +1,6 @@
 import { formatDate } from '../utils/point-utils';
 import AbstractView from '../framework/view/abstract-view';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 
 const createOffersTemplate = (offers, type, offersByType) => {
   const offersByCurrentType = offersByType.find((item) => item.type === type).offers;
@@ -58,17 +59,19 @@ const createPointItemTemplate = (points, destinations, offersByType) => {
   );
 };
 
-export default class PointItemView extends AbstractView {
+export default class PointItemView extends AbstractStatefulView {
   constructor(point, destinations, offersByType) {
     super();
-    this.point = point;
+    this._state = point;
     this.destinations = destinations;
     this.offersByType = offersByType;
   }
 
   get template() {
-    return createPointItemTemplate(this.point, this.destinations, this.offersByType);
+    return createPointItemTemplate(this._state, this.destinations, this.offersByType);
   }
+
+  static parsePointToState = (point) => ({ ...point});
 
   setButtonClickHandler = (callback) => {
     this._callback.clickClose = callback;
@@ -87,6 +90,6 @@ export default class PointItemView extends AbstractView {
 
   #favoriteBtnClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.clickFavorite();
+    this._callback.clickFavorite(PointItemView.parsePointToState(this._state));
   };
 }

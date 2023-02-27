@@ -78,7 +78,7 @@ export default class CommonPresenter {
       case UserAction.UPDATE_POINT:
         this.#pointPresenters.get(update.id).setSaving();
         try {
-          await this.#pointsModel.addPoint(updateType, update);
+          await this.#pointsModel.updatePoint(updateType, update);
         } catch (err) {
           this.#pointPresenters.get(update.id).setAborting();
         }

@@ -137,8 +137,8 @@ export default class PointPresenter {
     this.#changeData(UserAction.DELETE_POINT, UpdateType.MINOR, point);
   };
 
-  #favoriteClickHandler = () => {
-    this.#changeData(UserAction.UPDATE_POINT, UpdateType.MINOR, { ...this.#point, isFavorite: !this.#point.isFavorite });
+  #favoriteClickHandler = (point) => {
+    this.#changeData(UserAction.UPDATE_POINT, UpdateType.MINOR, { ...point, isFavorite: !point.isFavorite })
   };
 
   #escKeyDownHandler = (evt) => {
