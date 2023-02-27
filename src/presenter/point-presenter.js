@@ -60,6 +60,41 @@ export default class PointPresenter {
     remove(prevEditPointComponent);
   };
 
+  setSaving = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#editPointComponent.updateElement({
+        isDisabled: true,
+        isSaving: true
+      });
+    }
+  }
+
+  setDeleting = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#editPointComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true
+      })
+    }
+  }
+
+  setAborting = () => {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#pointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#editPointComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      })
+    }
+
+    this.#editPointComponent.shake(resetFormState);
+  }
+
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
       this.#editPointComponent.reset(this.#point);
@@ -96,7 +131,6 @@ export default class PointPresenter {
 
   #formSubmitHandler = (point) => {
     this.#changeData(UserAction.UPDATE_POINT, UpdateType.MINOR, point);
-    this.#replaceFormToPoint();
   };
 
   #deleteClickHandler = (point) => {

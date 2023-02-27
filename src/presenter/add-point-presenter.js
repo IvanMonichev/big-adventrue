@@ -50,9 +50,26 @@ export default class AddPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
+  setSaving = () => {
+    this.#addPointComponent.updateElement({
+      isDisabled: true,
+      isSaving: true
+    });
+  };
+
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#addPointComponent.updateElement({
+        isDisabled: false,
+        isSaving: false
+      });
+    };
+
+    this.#addPointComponent.shake(resetFormState);
+  };
+
   #formSubmitHandler = (update, destinations, offersByType) => {
     this.#changeData(UserAction.ADD_POINT, UpdateType.MINOR, { id: nanoid(), ...update }, destinations, offersByType);
-    this.destroy();
   };
 
   #cancelClickHandler = () => {
